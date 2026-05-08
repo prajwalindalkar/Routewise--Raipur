@@ -169,7 +169,7 @@ body { display: flex; flex-direction: column; }
 .expand-body { font-size: 11px; color: #555; line-height: 1.7; margin-top: 8px; background: #f9fafb; border-radius: 8px; padding: 10px; display: none; }
 .expand-body.open { display: block; }
 
-.export-btn { width: 100%; padding: 11px; background: #0f172a; color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
 
 .timeline-label { font-size: 12px; font-weight: 700; color: #5f259f; margin: 14px 0 8px; }
 .rstop { display: flex; gap: 10px; }
@@ -349,6 +349,8 @@ var gmap,markersArr=[],polylines=[],geocoder,directionsService;
 var _autoReoptimize=false;
 var LS_KEY='routewise_raipur_v3';
 var LS_AGENT='routewise_agent_name';
+var SHEETS_URL='https://script.google.com/macros/s/AKfycbzU8wZNHC1o2RRt74mbCPo9tbCJt0D3JiwkQmu52BAtlz25oQ3xdnvs8rMelUPsOBaqyw/exec';
+var reoptCount=0; // tracks how many times agent hits Optimize in a day
 var FUEL_RATE=6; // ₹ per km
 
 // Distance matrix cache to avoid repeat API calls
@@ -622,6 +624,7 @@ function breakWaitAt(now){
 // ── OPTIMIZE (async with Directions API) ──────────────────────────────────────
 async function optimize(){
   if(!startPlace||stops.length<1){showMsg('Pin a start location first');return;}
+  reoptCount++;
   showLoading(true);
 
   try {
@@ -804,7 +807,8 @@ function renderRoute(){
   }
 
   // Export button
-  html+='<button class="export-btn" onclick="exportRoute('+optKm.toFixed(2)+','+optTravMin.toFixed(2)+','+optVisitMin+','+optProductivePct+','+naive.km.toFixed(2)+','+naive.travMin.toFixed(2)+','+naiveProductivePct+','+fuelSaved.toFixed(2)+','+twMet+','+twTotal+')">📤 Export Today\'s Route (for heatmap &amp; impact analysis)</button>';
+  // Auto sync to sheets silently — no button needed
+  syncToSheets(optKm,optTravMin,optVisitMin,optProductivePct,naive.km,naive.travMin,naiveProductivePct,fuelSaved,twMet,twTotal);
 
   // Hero
   html+='<div class="route-hero">'+
@@ -988,67 +992,57 @@ function drawOptimized(){
 }
 
 // ── EXPORT ────────────────────────────────────────────────────────────────────
-function exportRoute(optKm,optTravMin,optVisitMin,optProductivePct,naiveKm,naiveTravMin,naiveProductivePct,fuelSaved,twMet,twTotal){
-  if(!optimized.length){showMsg('Optimize your route first');return;}
+function syncToSheets(optKm,optTravMin,optVisitMin,optProductivePct,naiveKm,naiveTravMin,naiveProductivePct,fuelSaved,twMet,twTotal){
   var today=new Date();
   var dateStr=today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+  var timeStr=today.getHours()+':'+(today.getMinutes()<10?'0':'')+today.getMinutes();
   var agentName=getAgentName();
+  var twMissed=twTotal-twMet;
+  var twCompliance=twTotal>0?Math.round(twMet/twTotal*100):null;
+  var savedKm=Math.max(0,parseFloat(naiveKm)-parseFloat(optKm));
+  var savedTrav=Math.max(0,parseFloat(naiveTravMin)-parseFloat(optTravMin));
+  var savedTotal=Math.max(0,(parseFloat(naiveTravMin)+parseFloat(naiveKm))-(parseFloat(optTravMin)+parseFloat(optKm)));
 
-  var exportData={
-    meta:{
-      agent: agentName,
-      date: dateStr,
-      day_start: document.getElementById('day-start-time').value,
-      day_end: document.getElementById('day-end-time').value,
-      total_stops_visited: optimized.length,
-      data_source: 'Google Maps Directions API — actual road distances and times'
-    },
-    impact_metrics:{
-      optimised_distance_km: parseFloat(optKm),
-      unoptimised_baseline_km: parseFloat(naiveKm),
-      distance_saved_km: Math.max(0,parseFloat(naiveKm)-parseFloat(optKm)).toFixed(2),
-      optimised_travel_time_min: parseFloat(optTravMin).toFixed(1),
-      unoptimised_travel_time_min: parseFloat(naiveTravMin).toFixed(1),
-      travel_time_saved_min: Math.max(0,parseFloat(naiveTravMin)-parseFloat(optTravMin)).toFixed(1),
-      optimised_productive_ratio_pct: optProductivePct,
-      unoptimised_productive_ratio_pct: naiveProductivePct,
-      productive_ratio_improvement_pct: Math.max(0,optProductivePct-naiveProductivePct),
-      visit_time_min: optVisitMin,
-      fuel_cost_saved_inr: parseFloat(fuelSaved).toFixed(0),
-      time_windows_set: twTotal,
-      time_windows_met: twMet,
-      time_window_compliance_pct: twTotal>0?Math.round(twMet/twTotal*100):null,
-      baseline_method: 'Average of 50 random route orderings using Google Maps road distances'
-    },
-    stops: optimized.map(function(s,i){
-      return{
-        stop_number: i+1,
-        name: s.name,
-        address: s.address,
-        lat: s.lat,
-        lon: s.lon,
-        visit_duration_min: s.dur||20,
-        arrival_time: s.arrivalTime?fmtTime(s.arrivalTime):'',
-        departure_time: s.departTime?fmtTime(s.departTime):'',
-        road_distance_from_prev_km: s.travelledKm?parseFloat(s.travelledKm.toFixed(2)):null,
-        road_travel_time_from_prev_min: s.travelledMin?parseFloat(s.travelledMin.toFixed(1)):null,
-        time_window: s.from?(s.from+' – '+s.to):null,
-        time_window_met: s.from?(s.arrivalTime<=toMin(s.to)):null
-      };
-    }),
-    start_point: startPlace?{name:startPlace.name,lat:startPlace.lat,lon:startPlace.lon}:null,
-    end_point: endPlace?{name:endPlace.name,lat:endPlace.lat,lon:endPlace.lon}:null
+  var coordsStr=optimized.map(function(s,i){
+    return 'Stop '+(i+1)+': '+s.name+' ('+s.lat.toFixed(4)+','+s.lon.toFixed(4)+')';
+  }).join(' | ');
+
+  var data={
+    agent_name: agentName,
+    date: dateStr,
+    time_of_optimization: timeStr,
+    day_start: document.getElementById('day-start-time').value,
+    day_end: document.getElementById('day-end-time').value,
+    reoptimization_count: reoptCount,
+    total_stops: optimized.length,
+    stops_with_time_windows: twTotal,
+    time_windows_met: twMet,
+    time_windows_missed: twMissed,
+    time_window_compliance_pct: twCompliance,
+    optimised_distance_km: parseFloat(parseFloat(optKm).toFixed(2)),
+    unoptimised_distance_km: parseFloat(parseFloat(naiveKm).toFixed(2)),
+    distance_saved_km: parseFloat(savedKm.toFixed(2)),
+    optimised_travel_min: parseFloat(parseFloat(optTravMin).toFixed(1)),
+    unoptimised_travel_min: parseFloat(parseFloat(naiveTravMin).toFixed(1)),
+    travel_time_saved_min: parseFloat(savedTrav.toFixed(1)),
+    total_time_saved_min: parseFloat(savedTotal.toFixed(1)),
+    productive_ratio_optimised_pct: optProductivePct,
+    productive_ratio_unoptimised_pct: naiveProductivePct,
+    productive_ratio_improvement_pct: Math.max(0,optProductivePct-naiveProductivePct),
+    visit_time_min: optVisitMin,
+    fuel_saved_inr: parseFloat(parseFloat(fuelSaved).toFixed(0)),
+    stop_coordinates: coordsStr
   };
 
-  var json=JSON.stringify(exportData,null,2);
-  var blob=new Blob([json],{type:'application/json'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');
-  a.href=url;
-  a.download='routewise_'+agentName.replace(/\s+/g,'_')+'_'+dateStr+'.json';
-  document.body.appendChild(a);a.click();
-  document.body.removeChild(a);URL.revokeObjectURL(url);
-  showMsg('✓ Exported — share this file for analysis');
+  // Silent background sync — agent sees nothing, data just goes to sheet
+  fetch(SHEETS_URL,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(data)
+  }).catch(function(err){
+    console.warn('Sheets sync failed silently:',err);
+  });
 }
 
 function navTo(lat,lon){window.open('https://www.google.com/maps/dir/?api=1&destination='+lat+','+lon+'&travelmode=driving','_blank');}
