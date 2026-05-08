@@ -25,14 +25,13 @@ body { display: flex; flex-direction: column; }
 .stops-scroll { flex: 1; overflow-y: auto; padding: 10px; -webkit-overflow-scrolling: touch; }
 .section-label { font-size: 11px; font-weight: 700; color: #5f259f; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; margin-top: 4px; }
 
-/* Agent name card */
 .agent-card { background: white; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 1px 5px rgba(0,0,0,.09); padding: 12px; }
 .agent-card-title { font-size: 12px; font-weight: 700; color: #5f259f; margin-bottom: 8px; }
 .agent-input-row { display: flex; align-items: center; gap: 8px; }
 .agent-input { flex: 1; padding: 8px 10px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; color: #111; }
 .agent-input:focus { border-color: #5f259f; }
 .agent-input.saved { border-color: #22c55e; background: #f0fdf4; }
-.agent-save-btn { padding: 8px 14px; background: #5f259f; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.agent-save-btn { padding: 8px 14px; background: #5f259f; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
 .se-card { background: white; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 1px 5px rgba(0,0,0,.09); }
 .se-row { display: flex; align-items: center; gap: 8px; padding: 11px 12px; }
@@ -46,7 +45,6 @@ body { display: flex; flex-direction: column; }
 .se-actions { display: flex; gap: 6px; flex-shrink: 0; }
 .se-pin-btn { background: #f5f0ff; border: 1px solid #c4b5fd; border-radius: 8px; padding: 6px 10px; font-size: 12px; color: #6d28d9; cursor: pointer; }
 .se-clear-btn { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 6px 8px; font-size: 12px; color: #ef4444; cursor: pointer; }
-
 .time-row { display: flex; align-items: center; gap: 8px; padding: 0 12px 10px; }
 .time-row-label { font-size: 12px; color: #555; white-space: nowrap; }
 .time-input { border: 1.5px solid #ddd; border-radius: 8px; padding: 6px 10px; font-size: 13px; color: #111; outline: none; }
@@ -54,7 +52,6 @@ body { display: flex; flex-direction: column; }
 
 .break-card { background: white; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 1px 5px rgba(0,0,0,.09); overflow: hidden; }
 .break-row { display: flex; align-items: center; gap: 8px; padding: 10px 12px; }
-.break-icon { font-size: 18px; flex-shrink: 0; }
 .break-fields { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
 .break-input { border: 1px solid #ddd; border-radius: 6px; padding: 5px 8px; font-size: 12px; color: #111; outline: none; }
 .break-name-input { flex: 1; min-width: 80px; }
@@ -92,6 +89,13 @@ body { display: flex; flex-direction: column; }
 .pin-banner b { flex: 1; }
 .pin-cancel-btn { background: #78350f; color: white; border: none; border-radius: 6px; padding: 6px 14px; font-size: 12px; cursor: pointer; }
 
+/* Loading overlay */
+.loading-overlay { position: fixed; inset: 0; background: rgba(95,37,159,0.85); z-index: 99997; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+.loading-overlay.show { display: flex; }
+.loading-spinner { width: 44px; height: 44px; border: 4px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+.loading-text { color: white; font-size: 14px; font-weight: 600; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
 .route-scroll { flex: 1; overflow-y: auto; padding: 10px; -webkit-overflow-scrolling: touch; }
 .route-hero { background: linear-gradient(135deg, #5f259f, #7c3aed); color: white; border-radius: 14px; padding: 14px; margin-bottom: 12px; }
 .rh-title { font-size: 15px; font-weight: 700; }
@@ -120,12 +124,28 @@ body { display: flex; flex-direction: column; }
 .saving-label { font-size: 12px; color: #166534; }
 .saving-val { font-size: 13px; font-weight: 700; color: #166534; }
 
-/* i button expandable */
-.expandable-section { margin-top: 10px; border-top: 1px solid #f3f4f6; padding-top: 8px; }
-.expand-toggle { font-size: 11px; color: #6b7280; cursor: pointer; background: none; border: none; padding: 0; display: flex; align-items: center; gap: 4px; }
-.expand-body { font-size: 11px; color: #555; line-height: 1.7; margin-top: 8px; background: #f9fafb; border-radius: 8px; padding: 10px; display: none; }
-.expand-body.open { display: block; }
+/* Productive time ratio card */
+.productive-card { background: white; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 5px rgba(0,0,0,.09); }
+.productive-title { font-size: 13px; font-weight: 700; color: #111; margin-bottom: 4px; }
+.productive-sub { font-size: 11px; color: #888; margin-bottom: 12px; }
+.productive-compare { display: flex; gap: 10px; margin-bottom: 12px; }
+.productive-box { flex: 1; border-radius: 10px; padding: 12px 10px; text-align: center; }
+.productive-box.without { background: #fef2f2; border: 1.5px solid #fecaca; }
+.productive-box.with { background: #f0fdf4; border: 1.5px solid #bbf7d0; }
+.productive-box-label { font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
+.productive-box.without .productive-box-label { color: #dc2626; }
+.productive-box.with .productive-box-label { color: #16a34a; }
+.productive-box-val { font-size: 24px; font-weight: 800; }
+.productive-box.without .productive-box-val { color: #dc2626; }
+.productive-box.with .productive-box-val { color: #16a34a; }
+.productive-box-sub { font-size: 10px; color: #888; margin-top: 4px; line-height: 1.4; }
+.productive-breakdown { background: #f9fafb; border-radius: 8px; padding: 10px 12px; }
+.pb-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+.pb-row:last-child { margin-bottom: 0; }
+.pb-label { color: #555; }
+.pb-val { font-weight: 600; color: #111; }
 
+/* Idle card */
 .idle-card { background: white; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 5px rgba(0,0,0,.09); }
 .idle-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
 .idle-card-title { font-size: 13px; font-weight: 700; color: #111; }
@@ -136,7 +156,7 @@ body { display: flex; flex-direction: column; }
 .idle-box { flex: 1; border-radius: 10px; padding: 12px 10px; text-align: center; }
 .idle-box.bad { background: #fef2f2; border: 1.5px solid #fecaca; }
 .idle-box.good { background: #f0fdf4; border: 1.5px solid #bbf7d0; }
-.idle-box-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; }
+.idle-box-label { font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 6px; }
 .idle-box.bad .idle-box-label { color: #dc2626; }
 .idle-box.good .idle-box-label { color: #16a34a; }
 .idle-box-val { font-size: 20px; font-weight: 800; }
@@ -144,7 +164,11 @@ body { display: flex; flex-direction: column; }
 .idle-box.good .idle-box-val { color: #16a34a; }
 .idle-box-sub { font-size: 10px; color: #888; margin-top: 4px; }
 
-/* Export button */
+.expandable-section { margin-top: 10px; border-top: 1px solid #f3f4f6; padding-top: 8px; }
+.expand-toggle { font-size: 11px; color: #6b7280; cursor: pointer; background: none; border: none; padding: 0; }
+.expand-body { font-size: 11px; color: #555; line-height: 1.7; margin-top: 8px; background: #f9fafb; border-radius: 8px; padding: 10px; display: none; }
+.expand-body.open { display: block; }
+
 .export-btn { width: 100%; padding: 11px; background: #0f172a; color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
 .timeline-label { font-size: 12px; font-weight: 700; color: #5f259f; margin: 14px 0 8px; }
@@ -182,7 +206,6 @@ body { display: flex; flex-direction: column; }
 .idle-seg-title { font-size: 12px; font-weight: 700; color: #92400e; }
 .idle-seg-sub { font-size: 11px; color: #b45309; margin-top: 2px; }
 
-/* Gap nudge — unified */
 .gap-nudge { display: flex; gap: 10px; margin: 4px 0; }
 .gap-nudge-left { display: flex; flex-direction: column; align-items: center; width: 28px; flex-shrink: 0; }
 .gap-nudge-line { width: 2px; flex: 1; background: repeating-linear-gradient(to bottom,#a78bfa 0,#a78bfa 4px,transparent 4px,transparent 8px); min-height: 20px; }
@@ -194,11 +217,10 @@ body { display: flex; flex-direction: column; }
 .nav-btn { width: 100%; padding: 9px; background: #128c7e; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 8px; }
 .spacer { height: 8px; }
 
-/* Modal */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 99998; display: none; align-items: center; justify-content: center; padding: 20px; }
 .modal-overlay.show { display: flex; }
 .modal { background: white; border-radius: 16px; padding: 24px; max-width: 320px; width: 100%; }
-.modal-title { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 8px; }
+.modal-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
 .modal-body { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 20px; }
 .modal-btns { display: flex; gap: 10px; }
 .modal-cancel { flex: 1; padding: 11px; background: #f3f4f6; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; color: #555; cursor: pointer; }
@@ -221,15 +243,13 @@ body { display: flex; flex-direction: column; }
 
 <div class="tabs">
   <div class="tab active" id="tab-stops" onclick="goTab('stops')">📍 Stops</div>
-  <div class="tab" id="tab-map"   onclick="goTab('map')">🗺️ Map</div>
+  <div class="tab" id="tab-map" onclick="goTab('map')">🗺️ Map</div>
   <div class="tab" id="tab-route" onclick="goTab('route')">🛣️ Route</div>
 </div>
 
-<!-- STOPS PANEL -->
 <div class="panel active" id="panel-stops">
   <div class="stops-scroll" id="stops-scroll">
 
-    <!-- Agent name -->
     <div class="section-label">👤 Agent Name</div>
     <div class="agent-card">
       <div class="agent-card-title">Enter your name — saved permanently, only needs to be set once</div>
@@ -239,7 +259,6 @@ body { display: flex; flex-direction: column; }
       </div>
     </div>
 
-    <!-- Start point -->
     <div class="section-label" style="margin-top:8px;">🟢 Starting Point</div>
     <div class="se-card">
       <div class="se-row">
@@ -256,7 +275,6 @@ body { display: flex; flex-direction: column; }
       </div>
     </div>
 
-    <!-- End point -->
     <div class="section-label" style="margin-top:8px;">🔴 End Point <span style="font-weight:400;color:#999;">(optional)</span></div>
     <div class="se-card">
       <div class="se-row">
@@ -273,17 +291,14 @@ body { display: flex; flex-direction: column; }
       </div>
     </div>
 
-    <!-- Breaks -->
     <div class="section-label" style="margin-top:8px;">☕ Breaks <span style="font-weight:400;color:#999;">(optional)</span></div>
     <div id="breaks-list"></div>
     <button class="add-break-btn" onclick="addBreak()">+ Add Break (Lunch / Rest / Prayer…)</button>
 
-    <!-- Merchant stops -->
     <div class="section-label" style="margin-top:4px;">🏪 Merchant Stops</div>
     <div id="stops-list">
       <div class="empty-msg"><div class="big">🏪</div>Tap "Add Stop" below to<br>pin merchant locations on the map.</div>
     </div>
-
   </div>
   <div class="bottom-bar">
     <button class="add-stop-btn" onclick="startPin('stop')">📌 Add Stop (Drop Pin on Map)</button>
@@ -291,7 +306,6 @@ body { display: flex; flex-direction: column; }
   </div>
 </div>
 
-<!-- MAP PANEL -->
 <div class="panel" id="panel-map">
   <div id="map-container">
     <div class="pin-banner" id="pin-banner">
@@ -302,18 +316,21 @@ body { display: flex; flex-direction: column; }
   </div>
 </div>
 
-<!-- ROUTE PANEL -->
 <div class="panel" id="panel-route">
   <div class="route-scroll" id="route-scroll">
     <div class="empty-msg"><div class="big">🛣️</div>Pin your start &amp; stops,<br>then tap Optimize Route.</div>
   </div>
 </div>
 
-<!-- Clear modal -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Calculating real road distances…</div>
+</div>
+
 <div class="modal-overlay" id="clear-modal">
   <div class="modal">
     <div class="modal-title">🗑 Clear Route Data?</div>
-    <div class="modal-body">This will delete your start point, end point, all stops, breaks, and optimized route. Your agent name will be kept. This cannot be undone.</div>
+    <div class="modal-body">This will delete your start, end, all stops, breaks and optimized route. Your agent name will be kept.</div>
     <div class="modal-btns">
       <button class="modal-cancel" onclick="closeClearModal()">Cancel</button>
       <button class="modal-confirm" onclick="clearAll()">Yes, Clear</button>
@@ -328,62 +345,55 @@ var RAIPUR={lat:21.2514,lng:81.6296};
 var stops=[],optimized=[],breaks=[];
 var startPlace=null,endPlace=null;
 var pinMode=false,pinTarget='stop';
-var gmap,markersArr=[],polylines=[],geocoder;
-var SPEED=18/60,ROAD_FACTOR=1.35;
+var gmap,markersArr=[],polylines=[],geocoder,directionsService;
 var _autoReoptimize=false;
-var LS_KEY='routewise_raipur_v2';
-var LS_AGENT_KEY='routewise_agent_name';
+var LS_KEY='routewise_raipur_v3';
+var LS_AGENT='routewise_agent_name';
+var FUEL_RATE=6; // ₹ per km
+
+// Distance matrix cache to avoid repeat API calls
+var distCache={};
 
 // ── AGENT NAME ────────────────────────────────────────────────────────────────
 function saveAgentName(){
   var name=document.getElementById('agent-name-input').value.trim();
   if(!name){showMsg('Please enter your name');return;}
-  localStorage.setItem(LS_AGENT_KEY,name);
-  var inp=document.getElementById('agent-name-input');
-  inp.classList.add('saved');
+  localStorage.setItem(LS_AGENT,name);
+  document.getElementById('agent-name-input').classList.add('saved');
   showMsg('✓ Name saved: '+name);
 }
-
 function loadAgentName(){
-  var name=localStorage.getItem(LS_AGENT_KEY)||'';
+  var name=localStorage.getItem(LS_AGENT)||'';
   var inp=document.getElementById('agent-name-input');
-  inp.value=name;
-  if(name) inp.classList.add('saved');
+  inp.value=name; if(name)inp.classList.add('saved');
   return name;
 }
-
-function getAgentName(){
-  return localStorage.getItem(LS_AGENT_KEY)||'Unknown Agent';
-}
+function getAgentName(){return localStorage.getItem(LS_AGENT)||'Unknown Agent';}
 
 // ── LOCALSTORAGE ──────────────────────────────────────────────────────────────
 function saveToStorage(){
   try{
     localStorage.setItem(LS_KEY,JSON.stringify({
-      stops:stops, breaks:breaks, startPlace:startPlace, endPlace:endPlace,
-      optimized:optimized,
+      stops:stops,breaks:breaks,startPlace:startPlace,endPlace:endPlace,optimized:optimized,
       dayStart:document.getElementById('day-start-time').value,
       dayEnd:document.getElementById('day-end-time').value
     }));
   }catch(e){}
 }
-
 function loadFromStorage(){
   try{
     var raw=localStorage.getItem(LS_KEY);
     if(!raw)return false;
     var d=JSON.parse(raw);
-    stops=d.stops||[]; breaks=d.breaks||[];
-    startPlace=d.startPlace||null; endPlace=d.endPlace||null;
-    optimized=d.optimized||[];
+    stops=d.stops||[];breaks=d.breaks||[];
+    startPlace=d.startPlace||null;endPlace=d.endPlace||null;optimized=d.optimized||[];
     if(d.dayStart)document.getElementById('day-start-time').value=d.dayStart;
     if(d.dayEnd)document.getElementById('day-end-time').value=d.dayEnd;
     return true;
   }catch(e){return false;}
 }
-
 function clearAll(){
-  stops=[];breaks=[];startPlace=null;endPlace=null;optimized=[];
+  stops=[];breaks=[];startPlace=null;endPlace=null;optimized=[];distCache={};
   document.getElementById('day-start-time').value='09:00';
   document.getElementById('day-end-time').value='18:00';
   localStorage.removeItem(LS_KEY);
@@ -391,12 +401,67 @@ function clearAll(){
   renderPoints();renderStops();renderBreaks();updateOptBtn();
   if(gmap)redrawMarkers();
   document.getElementById('route-scroll').innerHTML='<div class="empty-msg"><div class="big">🛣️</div>Pin your start &amp; stops,<br>then tap Optimize Route.</div>';
-  goTab('stops');
-  showMsg('Route data cleared — your name is kept');
+  goTab('stops');showMsg('Route data cleared — your name is kept');
 }
-
 function confirmClearAll(){document.getElementById('clear-modal').classList.add('show');}
 function closeClearModal(){document.getElementById('clear-modal').classList.remove('show');}
+
+// ── GOOGLE DIRECTIONS API ─────────────────────────────────────────────────────
+// Get real road distance (km) and duration (min) between two points
+function getRoadDistance(from, to){
+  var key=from.lat.toFixed(4)+','+from.lon.toFixed(4)+'->'+to.lat.toFixed(4)+','+to.lon.toFixed(4);
+  if(distCache[key]) return Promise.resolve(distCache[key]);
+
+  return new Promise(function(resolve){
+    directionsService.route({
+      origin: new google.maps.LatLng(from.lat, from.lon),
+      destination: new google.maps.LatLng(to.lat, to.lon),
+      travelMode: google.maps.TravelMode.DRIVING
+    }, function(result, status){
+      if(status==='OK' && result.routes[0]){
+        var leg=result.routes[0].legs[0];
+        var data={
+          km: leg.distance.value/1000,
+          min: leg.duration.value/60
+        };
+        distCache[key]=data;
+        resolve(data);
+      } else {
+        // Fallback to straight line if API fails
+        var straightKm=haversine(from,to)*1.35;
+        var data={km:straightKm, min:straightKm/0.3};
+        resolve(data);
+      }
+    });
+  });
+}
+
+// Get distance matrix for multiple pairs in one batch
+async function buildDistanceMatrix(points){
+  var matrix={};
+  var pairs=[];
+  for(var i=0;i<points.length;i++){
+    for(var j=0;j<points.length;j++){
+      if(i!==j) pairs.push([i,j]);
+    }
+  }
+  // Process in parallel batches (Google allows 10 elements per request)
+  var promises=pairs.map(function(pair){
+    return getRoadDistance(points[pair[0]],points[pair[1]]).then(function(d){
+      if(!matrix[pair[0]])matrix[pair[0]]={};
+      matrix[pair[0]][pair[1]]=d;
+    });
+  });
+  await Promise.all(promises);
+  return matrix;
+}
+
+// Haversine for fallback only
+function haversine(a,b){
+  var R=6371,dLa=(b.lat-a.lat)*Math.PI/180,dLo=(b.lon-a.lon)*Math.PI/180,
+      x=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLo/2)*Math.sin(dLo/2);
+  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+}
 
 // ── MAP INIT ──────────────────────────────────────────────────────────────────
 function initGoogleMap(){
@@ -405,15 +470,13 @@ function initGoogleMap(){
     streetViewControl:false,fullscreenControl:false,mapTypeControl:false
   });
   geocoder=new google.maps.Geocoder();
+  directionsService=new google.maps.DirectionsService();
   gmap.addListener('click',function(e){if(!pinMode)return;handlePinDrop(e.latLng.lat(),e.latLng.lng());});
-
   loadAgentName();
   if(loadFromStorage()){
     renderPoints();renderStops();renderBreaks();updateOptBtn();redrawMarkers();
     if(optimized.length){
-      renderRoute(toMin(document.getElementById('day-start-time').value));
-      drawOptimized();
-      showMsg('Session restored — welcome back');
+      renderRoute();drawOptimized();showMsg('Session restored');
     } else {
       showMsg('Stops restored — ready to optimize');
     }
@@ -437,9 +500,7 @@ function startPin(target){
   document.getElementById('pin-banner').style.display='flex';
   goTab('map');
 }
-
 function cancelPin(){pinMode=false;document.getElementById('pin-banner').style.display='none';}
-
 function handlePinDrop(lat,lng){
   var prompts={start:'Starting location name:',end:'End location name:',stop:'Merchant / shop name:'};
   var name=prompt(prompts[pinTarget]||'Name:');
@@ -455,7 +516,7 @@ function handlePinDrop(lat,lng){
   });
 }
 
-// ── START/END ─────────────────────────────────────────────────────────────────
+// ── POINTS ────────────────────────────────────────────────────────────────────
 function renderPoints(){
   function setEl(which,place){
     var info=document.getElementById(which+'-info'),clr=document.getElementById(which+'-clear');
@@ -464,30 +525,22 @@ function renderPoints(){
   }
   setEl('start',startPlace);setEl('end',endPlace);
 }
-
 function clearPoint(which){
   if(which==='start')startPlace=null;else endPlace=null;
   renderPoints();redrawMarkers();updateOptBtn();saveToStorage();
 }
-
-function updateOptBtn(){
-  document.getElementById('opt-btn').disabled=!(startPlace&&stops.length>=1);
-}
+function updateOptBtn(){document.getElementById('opt-btn').disabled=!(startPlace&&stops.length>=1);}
 
 // ── BREAKS ────────────────────────────────────────────────────────────────────
-function addBreak(){
-  breaks.push({id:Date.now()+Math.random(),name:'Lunch',time:'13:00',dur:45});
-  renderBreaks();saveToStorage();
-}
+function addBreak(){breaks.push({id:Date.now()+Math.random(),name:'Lunch',time:'13:00',dur:45});renderBreaks();saveToStorage();}
 function delBreak(id){breaks=breaks.filter(function(b){return b.id!==id;});renderBreaks();saveToStorage();}
 function setBreakField(id,f,v){var b=breaks.find(function(x){return x.id===id;});if(b){b[f]=v;saveToStorage();}}
-
 function renderBreaks(){
   var el=document.getElementById('breaks-list');
   if(!breaks.length){el.innerHTML='';return;}
   el.innerHTML=breaks.map(function(b){
     return '<div class="break-card"><div class="break-row">'+
-      '<div class="break-icon">☕</div>'+
+      '<span style="font-size:18px">☕</span>'+
       '<div style="flex:1;min-width:0"><div class="break-fields">'+
         '<input class="break-input break-name-input" type="text" placeholder="Name" value="'+esc(b.name)+'" onchange="setBreakField('+b.id+',\'name\',this.value)"/>'+
         '<input class="break-input" type="time" value="'+b.time+'" style="width:100px" onchange="setBreakField('+b.id+',\'time\',this.value)"/>'+
@@ -537,7 +590,6 @@ function renderStops(){
 
 // ── MAP MARKERS ───────────────────────────────────────────────────────────────
 function mkIcon(c){return{path:google.maps.SymbolPath.CIRCLE,scale:13,fillColor:c,fillOpacity:1,strokeColor:'white',strokeWeight:2};}
-
 function redrawMarkers(){
   markersArr.forEach(function(m){m.setMap(null);});markersArr=[];
   polylines.forEach(function(p){p.setMap(null);});polylines=[];
@@ -554,106 +606,182 @@ function redrawMarkers(){
   if(any){if(markersArr.length===1){gmap.setCenter({lat:markersArr[0].getPosition().lat(),lng:markersArr[0].getPosition().lng()});gmap.setZoom(15);}else gmap.fitBounds(bounds,50);}
 }
 
-// ── MATH ──────────────────────────────────────────────────────────────────────
+// ── HELPERS ───────────────────────────────────────────────────────────────────
 function toMin(t){if(!t)return null;var p=t.split(':');return +p[0]*60+ +p[1];}
-function dist(a,b){var R=6371,dLa=(b.lat-a.lat)*Math.PI/180,dLo=(b.lon-a.lon)*Math.PI/180,x=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLo/2)*Math.sin(dLo/2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))*ROAD_FACTOR;}
-function travelMin(a,b){return dist(a,b)/SPEED;}
-function routeKm(arr){var d=0;for(var i=1;i<arr.length;i++)d+=dist(arr[i-1],arr[i]);return d;}
+function fmtMin(m){m=Math.round(m);if(m<=0)return'0m';var h=Math.floor(m/60),mn=m%60;return h>0?(mn>0?h+'h '+mn+'m':h+'h'):mn+'m';}
+function fmtTime(m){m=Math.round(m);var h=Math.floor(m/60)%24,mn=m%60,ap=h>=12?'PM':'AM',hh=h%12||12;return hh+':'+(mn<10?'0':'')+mn+' '+ap;}
+function getDayStart(){return toMin(document.getElementById('day-start-time').value||'09:00');}
+function getDayEnd(){return toMin(document.getElementById('day-end-time').value||'18:00');}
 function hasTimeWindows(){return stops.some(function(s){return!!s.from;});}
-
 function breakWaitAt(now){
   var wait=0;
   breaks.forEach(function(b){var bs=toMin(b.time),be=bs+(b.dur||30);if(now>=bs&&now<be)wait=Math.max(wait,be-now);});
   return wait;
 }
 
-function simulateRoute(orderedStops,dayStart){
+// ── OPTIMIZE (async with Directions API) ──────────────────────────────────────
+async function optimize(){
+  if(!startPlace||stops.length<1){showMsg('Pin a start location first');return;}
+  showLoading(true);
+
+  try {
+    var dayStart=getDayStart();
+    // Build all points for distance matrix
+    var allPoints=[startPlace].concat(stops);
+    if(endPlace)allPoints.push(endPlace);
+
+    // Get real road distances between all pairs
+    var matrix=await buildDistanceMatrix(allPoints);
+
+    // Now run nearest-neighbour optimization using real distances
+    var free=stops.filter(function(s){return!s.from;}),
+        timed=stops.filter(function(s){return s.from;}).sort(function(a,b){return toMin(a.from)-toMin(b.from);});
+    var route=[],remaining=free.slice(),now=dayStart,g=0;
+    var cur=startPlace;
+    var curIdx=0; // index in allPoints
+
+    function getD(from,to){
+      var fi=allPoints.indexOf(from),ti=allPoints.indexOf(to);
+      if(fi>=0&&ti>=0&&matrix[fi]&&matrix[fi][ti])return matrix[fi][ti];
+      // fallback
+      var km=haversine(from,to)*1.35;
+      return{km:km,min:km/0.3};
+    }
+
+    while((remaining.length||timed.length)&&g++<500){
+      var urgent=null;
+      for(var i=0;i<timed.length;i++){
+        var d=getD(cur,timed[i]);
+        if(toMin(timed[i].from)<=now+d.min+30){urgent=timed[i];break;}
+      }
+      if(urgent&&(!remaining.length||toMin(urgent.from)<=now+getD(cur,urgent).min+15)){
+        var dd=getD(cur,urgent);now+=dd.min;
+        var bw=breakWaitAt(now);now+=bw;
+        if(now<toMin(urgent.from)){urgent.idleBefore=toMin(urgent.from)-now+bw;now=toMin(urgent.from);}else{urgent.idleBefore=bw;}
+        urgent.arrivalTime=now;urgent.departTime=now+(urgent.dur||20);
+        urgent.travelledKm=dd.km;urgent.travelledMin=dd.min;
+        now=urgent.departTime;cur=urgent;route.push(urgent);timed.splice(timed.indexOf(urgent),1);
+      }else if(remaining.length){
+        var best=remaining[0],bd=getD(cur,remaining[0]);
+        remaining.forEach(function(s){var d2=getD(cur,s);if(d2.min<bd.min){best=s;bd=d2;}});
+        now+=bd.min;var bw2=breakWaitAt(now);now+=bw2;
+        best.idleBefore=bw2;best.arrivalTime=now;best.departTime=now+(best.dur||20);
+        best.travelledKm=bd.km;best.travelledMin=bd.min;
+        now=best.departTime;cur=best;route.push(best);remaining.splice(remaining.indexOf(best),1);
+      }else{
+        var nx=timed.shift(),dn=getD(cur,nx);now+=dn.min;var bw3=breakWaitAt(now);now+=bw3;
+        if(now<toMin(nx.from)){nx.idleBefore=toMin(nx.from)-now+bw3;now=toMin(nx.from);}else{nx.idleBefore=bw3;}
+        nx.arrivalTime=now;nx.departTime=now+(nx.dur||20);
+        nx.travelledKm=dn.km;nx.travelledMin=dn.min;
+        now=nx.departTime;cur=nx;route.push(nx);
+      }
+    }
+
+    // Add travel to next for each stop
+    for(var j=0;j<route.length-1;j++){
+      var dn2=getD(route[j],route[j+1]);
+      route[j].travelToNext=dn2.min;
+      route[j].kmToNext=dn2.km;
+      route[j].totalGapToNext=dn2.min+(route[j+1].idleBefore||0);
+    }
+    // Last stop to end
+    if(endPlace&&route.length>0){
+      var dl=getD(route[route.length-1],endPlace);
+      route[route.length-1].travelToNext=dl.min;
+      route[route.length-1].kmToNext=dl.km;
+      route[route.length-1].totalGapToNext=dl.min;
+    }
+
+    // Calculate unoptimised baseline using real distances (sample 50 random routes due to API limits)
+    var naiveStats=await calcUnoptimisedReal(matrix,allPoints,dayStart);
+
+    optimized=route;
+    optimized._naiveStats=naiveStats;
+    optimized._matrix=matrix;
+    optimized._allPoints=allPoints;
+
+    saveToStorage();showLoading(false);
+    renderRoute();drawOptimized();goTab('route');
+    showMsg('✓ Optimized — '+route.length+' stops!');
+
+  } catch(err) {
+    showLoading(false);
+    showMsg('Error calculating route. Please try again.');
+    console.error(err);
+  }
+}
+
+// Calculate unoptimised baseline using real distances — 50 random shuffles
+async function calcUnoptimisedReal(matrix,allPoints,dayStart){
+  if(stops.length<=1){
+    return calcSingleRoute(stops,matrix,allPoints,dayStart);
+  }
+  var N=50; // reduced from 200 to limit API calls — matrix is pre-built so it's fast
+  var tKm=0,tTrav=0,tIdle=0,tMin=0,tVisit=0;
+  for(var i=0;i<N;i++){
+    var sh=stops.slice().sort(function(){return Math.random()-0.5;});
+    var r=calcSingleRoute(sh,matrix,allPoints,dayStart);
+    tKm+=r.km;tTrav+=r.travMin;tIdle+=r.idleMin;tMin+=r.totalMin;tVisit+=r.visitMin;
+  }
+  var brkTotal=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
+  return{km:tKm/N,travMin:tTrav/N,visitMin:tVisit/N,idleMin:tIdle/N,breakMin:brkTotal,totalMin:tMin/N};
+}
+
+function calcSingleRoute(orderedStops,matrix,allPoints,dayStart){
+  function getD(from,to){
+    var fi=allPoints.indexOf(from),ti=allPoints.indexOf(to);
+    if(fi>=0&&ti>=0&&matrix[fi]&&matrix[fi][ti])return matrix[fi][ti];
+    var km=haversine(from,to)*1.35;return{km:km,min:km/0.3};
+  }
   var all=[];if(startPlace)all.push(startPlace);orderedStops.forEach(function(s){all.push(s);});if(endPlace)all.push(endPlace);
-  var km=routeKm(all),visitMin=orderedStops.reduce(function(s,x){return s+(x.dur||20);},0),travMin=km/SPEED;
+  var km=0,travMin=0;
+  for(var i=0;i<all.length-1;i++){var d=getD(all[i],all[i+1]);km+=d.km;travMin+=d.min;}
+  var visitMin=orderedStops.reduce(function(s,x){return s+(x.dur||20);},0);
   var now=dayStart||getDayStart(),idleMin=0,cur=startPlace||orderedStops[0];
   orderedStops.forEach(function(s){
-    var travel=travelMin(cur,s);now+=travel;
+    var d=getD(cur,s);now+=d.min;
     var bw=breakWaitAt(now);idleMin+=bw;now+=bw;
     if(s.from){var tw=toMin(s.from);if(now<tw){idleMin+=(tw-now);now=tw;}}
     now+=(s.dur||20);cur=s;
   });
-  var breakTotal=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
-  return{km:km,travMin:travMin,visitMin:visitMin,idleMin:idleMin,breakMin:breakTotal,totalMin:travMin+visitMin+idleMin+breakTotal};
-}
-
-function calcUnoptimised(dayStart){
-  if(stops.length<=1)return simulateRoute(stops.slice(),dayStart);
-  var N=200,tKm=0,tTrav=0,tIdle=0,tMin=0;
-  for(var i=0;i<N;i++){
-    var sh=stops.slice().sort(function(){return Math.random()-0.5;});
-    var r=simulateRoute(sh,dayStart);
-    tKm+=r.km;tTrav+=r.travMin;tIdle+=r.idleMin;tMin+=r.totalMin;
-  }
-  var visitMin=stops.reduce(function(s,x){return s+(x.dur||20);},0);
   var brkTotal=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
-  return{km:tKm/N,travMin:tTrav/N,visitMin:visitMin,idleMin:tIdle/N,breakMin:brkTotal,totalMin:tMin/N};
+  return{km:km,travMin:travMin,visitMin:visitMin,idleMin:idleMin,breakMin:brkTotal,totalMin:travMin+visitMin+idleMin+brkTotal};
 }
 
-function getDayStart(){return toMin(document.getElementById('day-start-time').value||'09:00');}
-
-// ── OPTIMIZE ──────────────────────────────────────────────────────────────────
-function optimize(){
-  if(!startPlace||stops.length<1){showMsg('Pin a start location first');return;}
-  var dayStart=getDayStart();
-  var free=stops.filter(function(s){return!s.from;}),
-      timed=stops.filter(function(s){return s.from;}).sort(function(a,b){return toMin(a.from)-toMin(b.from);});
-  var route=[],remaining=free.slice(),cur=startPlace,now=dayStart,g=0;
-
-  while((remaining.length||timed.length)&&g++<500){
-    var urgent=null;
-    for(var i=0;i<timed.length;i++){if(toMin(timed[i].from)<=now+travelMin(cur,timed[i])+30){urgent=timed[i];break;}}
-    if(urgent&&(!remaining.length||toMin(urgent.from)<=now+travelMin(cur,urgent)+15)){
-      var tt=travelMin(cur,urgent);now+=tt;
-      var bw=breakWaitAt(now);now+=bw;
-      if(now<toMin(urgent.from)){urgent.idleBefore=toMin(urgent.from)-now+bw;now=toMin(urgent.from);}else{urgent.idleBefore=bw;}
-      urgent.arrivalTime=now;urgent.departTime=now+(urgent.dur||20);now=urgent.departTime;cur=urgent;route.push(urgent);timed.splice(timed.indexOf(urgent),1);
-    }else if(remaining.length){
-      var best=remaining[0],bt=travelMin(cur,remaining[0]);
-      remaining.forEach(function(s){var t=travelMin(cur,s);if(t<bt){best=s;bt=t;}});
-      now+=bt;var bw2=breakWaitAt(now);now+=bw2;
-      best.idleBefore=bw2;best.arrivalTime=now;best.departTime=now+(best.dur||20);now=best.departTime;cur=best;route.push(best);remaining.splice(remaining.indexOf(best),1);
-    }else{
-      var nx=timed.shift(),t2=travelMin(cur,nx);now+=t2;var bw3=breakWaitAt(now);now+=bw3;
-      if(now<toMin(nx.from)){nx.idleBefore=toMin(nx.from)-now+bw3;now=toMin(nx.from);}else{nx.idleBefore=bw3;}
-      nx.arrivalTime=now;nx.departTime=now+(nx.dur||20);now=nx.departTime;cur=nx;route.push(nx);
-    }
-  }
-
-  // travel to next — include idle before next stop as part of total gap
-  var allN=[];if(startPlace)allN.push(startPlace);route.forEach(function(s){allN.push(s);});if(endPlace)allN.push(endPlace);
-  for(var j=0;j<allN.length-1;j++){
-    allN[j].travelToNext=travelMin(allN[j],allN[j+1]);
-    allN[j].kmToNext=dist(allN[j],allN[j+1]);
-    // total gap = travel time + any waiting at next stop
-    var nextStop=allN[j+1];
-    allN[j].totalGapToNext=allN[j].travelToNext+(nextStop.idleBefore||0);
-  }
-
-  optimized=route;saveToStorage();renderRoute(dayStart);drawOptimized();goTab('route');
-  showMsg('✓ Optimized — '+route.length+' stops!');
+function showLoading(show){
+  document.getElementById('loading-overlay').classList.toggle('show',show);
 }
-
-function fmtMin(m){m=Math.round(m);if(m<=0)return'0m';var h=Math.floor(m/60),mn=m%60;return h>0?(mn>0?h+'h '+mn+'m':h+'h'):mn+'m';}
-function fmtTime(m){m=Math.round(m);var h=Math.floor(m/60)%24,mn=m%60,ap=h>=12?'PM':'AM',hh=h%12||12;return hh+':'+(mn<10?'0':'')+mn+' '+ap;}
 
 // ── RENDER ROUTE ──────────────────────────────────────────────────────────────
-function renderRoute(dayStart){
+function renderRoute(){
   var el=document.getElementById('route-scroll');if(!optimized.length)return;
-  dayStart=dayStart||getDayStart();
-  var naive=calcUnoptimised(dayStart);
-  var opt=simulateRoute(optimized,dayStart);
-  var optNodes=[];if(startPlace)optNodes.push(startPlace);optimized.forEach(function(s){optNodes.push(s);});if(endPlace)optNodes.push(endPlace);
-  var optKm=routeKm(optNodes);
+  var dayStart=getDayStart();
+  var dayEnd=getDayEnd();
+  var workingMin=dayEnd-dayStart;
+
+  var naive=optimized._naiveStats||{km:0,travMin:0,visitMin:0,idleMin:0,totalMin:0};
+
+  // Optimised stats
+  var optKm=optimized.reduce(function(s,x){return s+(x.travelledKm||0);},0);
+  if(endPlace&&optimized.length>0){optKm+=(optimized[optimized.length-1].kmToNext||0);}
+  var optTravMin=optimized.reduce(function(s,x){return s+(x.travelledMin||0);},0);
+  if(endPlace&&optimized.length>0){optTravMin+=(optimized[optimized.length-1].travelToNext||0);}
+  var optVisitMin=optimized.reduce(function(s,x){return s+(x.dur||20);},0);
+  var optIdleMin=optimized.reduce(function(s,x){return s+(x.idleBefore||0);},0);
+  var brkMin=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
+  var optTotalMin=optTravMin+optVisitMin+optIdleMin+brkMin;
+
+  // Productive time ratio = visit time / (working hours)
+  var optProductivePct=workingMin>0?Math.round(optVisitMin/workingMin*100):0;
+  var naiveProductivePct=workingMin>0&&naive.totalMin>0?Math.round(naive.visitMin/Math.max(naive.totalMin,workingMin)*100):0;
+
   var savedKm=Math.max(0,naive.km-optKm);
-  var savedTrav=Math.max(0,naive.travMin-opt.travMin);
-  var savedTotal=Math.max(0,naive.totalMin-opt.totalMin);
+  var savedTrav=Math.max(0,naive.travMin-optTravMin);
+  var savedTotal=Math.max(0,naive.totalMin-optTotalMin);
+  var savedIdle=Math.max(0,naive.idleMin-optIdleMin);
+  var fuelSaved=savedKm*FUEL_RATE;
   var maxKm=Math.max(naive.km,optKm,0.1);
-  var maxTrav=Math.max(naive.travMin,opt.travMin,0.1);
+  var maxTrav=Math.max(naive.travMin,optTravMin,0.1);
 
   // Breach detection
   var breaches=[];
@@ -661,6 +789,8 @@ function renderRoute(dayStart){
     if(s.from&&s.arrivalTime&&s.arrivalTime>toMin(s.to))
       breaches.push({name:s.name,arrived:fmtTime(s.arrivalTime),closesAt:s.to});
   });
+  var twMet=optimized.filter(function(s){return s.from&&s.arrivalTime&&s.arrivalTime<=toMin(s.to);}).length;
+  var twTotal=optimized.filter(function(s){return s.from;}).length;
 
   var html='';
 
@@ -668,13 +798,13 @@ function renderRoute(dayStart){
   if(breaches.length){
     html+='<div class="breach-banner"><div class="breach-title">⚠️ '+breaches.length+' stop'+(breaches.length>1?'s':'')+' cannot be reached on time</div>';
     breaches.forEach(function(b){
-      html+='<div class="breach-item"><span>❌</span><span><b>'+esc(b.name)+'</b> — you will arrive at '+b.arrived+' but the window closes at '+b.closesAt+'. No matter what route is taken, this stop cannot be reached within its time window today. Consider rescheduling it.</span></div>';
+      html+='<div class="breach-item"><span>❌</span><span><b>'+esc(b.name)+'</b> — you will arrive at '+b.arrived+' but the window closes at '+b.closesAt+'. Consider rescheduling this stop.</span></div>';
     });
     html+='</div>';
   }
 
   // Export button
-  html+='<button class="export-btn" onclick="exportRoute()">📤 Export Today\'s Route (for heatmap)</button>';
+  html+='<button class="export-btn" onclick="exportRoute('+optKm.toFixed(2)+','+optTravMin.toFixed(2)+','+optVisitMin+','+optProductivePct+','+naive.km.toFixed(2)+','+naive.travMin.toFixed(2)+','+naiveProductivePct+','+fuelSaved.toFixed(2)+','+twMet+','+twTotal+')">📤 Export Today\'s Route (for heatmap &amp; impact analysis)</button>';
 
   // Hero
   html+='<div class="route-hero">'+
@@ -683,50 +813,72 @@ function renderRoute(dayStart){
     '<div class="rstats">'+
       '<div class="rstat"><div class="rstat-v">'+optimized.length+'</div><div class="rstat-l">Stops</div></div>'+
       '<div class="rstat"><div class="rstat-v">'+optKm.toFixed(1)+' km</div><div class="rstat-l">Distance</div></div>'+
-      '<div class="rstat"><div class="rstat-v">'+fmtMin(opt.travMin)+'</div><div class="rstat-l">Travel</div></div>'+
-      '<div class="rstat"><div class="rstat-v">'+fmtMin(opt.idleMin)+'</div><div class="rstat-l">Idle</div></div>'+
-      '<div class="rstat"><div class="rstat-v">'+fmtMin(opt.totalMin)+'</div><div class="rstat-l">Total</div></div>'+
+      '<div class="rstat"><div class="rstat-v">'+fmtMin(optTravMin)+'</div><div class="rstat-l">Travel</div></div>'+
+      '<div class="rstat"><div class="rstat-v">'+fmtMin(optVisitMin)+'</div><div class="rstat-l">Visit time</div></div>'+
+      '<div class="rstat"><div class="rstat-v">'+fmtMin(optTotalMin)+'</div><div class="rstat-l">Total</div></div>'+
     '</div></div>';
 
   // Impact card
   html+='<div class="impact-card"><div class="impact-title">📊 RouteWise Impact</div>'+
-    '<div class="cmp-section"><div class="cmp-section-title">📏 Distance</div>'+
+    '<div class="cmp-section"><div class="cmp-section-title">📏 Distance (actual road distance)</div>'+
     '<div class="cmp-bar-row"><div class="cmp-bar-label" style="color:#ef4444">❌ Without</div><div class="cmp-bar-wrap"><div class="cmp-bar" style="width:100%;background:#ef4444"></div></div><div class="cmp-val" style="color:#ef4444">'+naive.km.toFixed(1)+' km</div></div>'+
     '<div class="cmp-bar-row"><div class="cmp-bar-label" style="color:#5f259f">✅ Optimized</div><div class="cmp-bar-wrap"><div class="cmp-bar" style="width:'+Math.round(optKm/maxKm*100)+'%;background:#5f259f"></div></div><div class="cmp-val" style="color:#5f259f">'+optKm.toFixed(1)+' km</div></div></div>'+
-    '<div class="cmp-section"><div class="cmp-section-title">🚗 Travel Time</div>'+
+    '<div class="cmp-section"><div class="cmp-section-title">🚗 Travel time (actual road time)</div>'+
     '<div class="cmp-bar-row"><div class="cmp-bar-label" style="color:#ef4444">❌ Without</div><div class="cmp-bar-wrap"><div class="cmp-bar" style="width:100%;background:#ef4444"></div></div><div class="cmp-val" style="color:#ef4444">'+fmtMin(naive.travMin)+'</div></div>'+
-    '<div class="cmp-bar-row"><div class="cmp-bar-label" style="color:#5f259f">✅ Optimized</div><div class="cmp-bar-wrap"><div class="cmp-bar" style="width:'+Math.round(opt.travMin/maxTrav*100)+'%;background:#5f259f"></div></div><div class="cmp-val" style="color:#5f259f">'+fmtMin(opt.travMin)+'</div></div></div>'+
+    '<div class="cmp-bar-row"><div class="cmp-bar-label" style="color:#5f259f">✅ Optimized</div><div class="cmp-bar-wrap"><div class="cmp-bar" style="width:'+Math.round(optTravMin/maxTrav*100)+'%;background:#5f259f"></div></div><div class="cmp-val" style="color:#5f259f">'+fmtMin(optTravMin)+'</div></div></div>'+
     '<div class="saving-badge">'+
       '<div class="saving-row"><span class="saving-label">📏 Distance saved</span><span class="saving-val">'+savedKm.toFixed(1)+' km</span></div>'+
       '<div class="saving-row"><span class="saving-label">🚗 Travel time saved</span><span class="saving-val">'+fmtMin(savedTrav)+'</span></div>'+
       '<div class="saving-row"><span class="saving-label">⏱ Total time saved</span><span class="saving-val">'+fmtMin(savedTotal)+'</span></div>'+
+      '<div class="saving-row"><span class="saving-label">⛽ Fuel cost saved</span><span class="saving-val">₹'+fuelSaved.toFixed(0)+'</span></div>'+
     '</div>'+
     '<div class="expandable-section">'+
       '<button class="expand-toggle" onclick="toggleExpand(this)">ℹ️ How is this calculated? ▾</button>'+
-      '<div class="expand-body">The "Without RouteWise" numbers are calculated by simulating 200 different random orderings of your stops and averaging the distance and travel time across all of them. This represents what a typical unplanned day looks like — when an agent visits stops in whatever order they appear on their list with no planning. All distances use a 1.35× road correction factor over straight-line distance, and travel speed is set at 18 km/h to account for Raipur city traffic, signals, and turns.</div>'+
+      '<div class="expand-body">The "Without RouteWise" numbers are calculated by simulating 50 different random orderings of your stops and averaging the distance and travel time. This represents what a typical unplanned day looks like. All distances and travel times use the Google Maps Directions API — the same data Google Maps shows you — so every number here matches real road conditions in Raipur. Fuel cost is estimated at ₹6 per km for a two-wheeler.</div>'+
     '</div></div>';
 
-  // Idle card with always-on i button
-  var twPresent=hasTimeWindows();
-  html+='<div class="idle-card">'+
-    '<div class="idle-card-header">'+
-      '<span class="idle-card-title">💤 Idle / Waiting Time</span>'+
-      '<button class="idle-i-btn" onclick="toggleExpandById(\'idle-explain\')">ℹ️ How calculated?</button>'+
+  // Productive time ratio card (always visible)
+  html+='<div class="productive-card">'+
+    '<div class="productive-title">⚡ Productive Time Ratio</div>'+
+    '<div class="productive-sub">% of your working day actually spent with merchants vs travelling</div>'+
+    '<div class="productive-compare">'+
+      '<div class="productive-box without">'+
+        '<div class="productive-box-label">❌ Without RouteWise</div>'+
+        '<div class="productive-box-val">'+naiveProductivePct+'%</div>'+
+        '<div class="productive-box-sub">productive<br>'+fmtMin(naive.visitMin)+' visiting<br>'+fmtMin(naive.travMin)+' travelling</div>'+
+      '</div>'+
+      '<div class="productive-box with">'+
+        '<div class="productive-box-label">✅ With RouteWise</div>'+
+        '<div class="productive-box-val">'+optProductivePct+'%</div>'+
+        '<div class="productive-box-sub">productive<br>'+fmtMin(optVisitMin)+' visiting<br>'+fmtMin(optTravMin)+' travelling</div>'+
+      '</div>'+
     '</div>'+
-    '<div class="idle-explain" id="idle-explain">'+
-      (twPresent
-        ? 'Idle time is the time spent waiting at a location before a visit is possible — this happens when a stop has a time window (e.g. "visit only between 3–3:30 PM"). Without RouteWise, a random unplanned route can send the agent to a time-windowed stop hours too early, forcing them to wait doing nothing. We simulate 200 random orderings of your stops and average the waiting time — that is the idle time without RouteWise. RouteWise sequences your stops so you arrive close to when the window opens, minimising wasted waiting.'
-        : 'None of your stops currently have a time window set, so idle time is zero for both optimized and unoptimized routes — there is nothing to wait for. If you add a time window to any stop (e.g. "visit only between 3–3:30 PM"), idle time will appear here and RouteWise will minimize it by sequencing your stops smartly around those windows.'
-      )+
-    '</div>'+
-    '<div class="idle-compare">'+
-      '<div class="idle-box bad"><div class="idle-box-label">❌ Without</div><div class="idle-box-val">'+fmtMin(naive.idleMin)+'</div><div class="idle-box-sub">avg wasted waiting</div></div>'+
-      '<div class="idle-box good"><div class="idle-box-label">✅ Optimized</div><div class="idle-box-val">'+fmtMin(opt.idleMin)+'</div><div class="idle-box-sub">idle time</div></div>'+
+    '<div class="productive-breakdown">'+
+      '<div class="pb-row"><span class="pb-label">Working hours ('+fmtTime(dayStart)+' – '+fmtTime(dayEnd)+')</span><span class="pb-val">'+fmtMin(workingMin)+'</span></div>'+
+      '<div class="pb-row"><span class="pb-label">Total visit time ('+optimized.length+' stops)</span><span class="pb-val">'+fmtMin(optVisitMin)+'</span></div>'+
+      '<div class="pb-row"><span class="pb-label">Total travel time</span><span class="pb-val">'+fmtMin(optTravMin)+'</span></div>'+
+      (brkMin>0?'<div class="pb-row"><span class="pb-label">Break time</span><span class="pb-val">'+fmtMin(brkMin)+'</span></div>':'')+
+      '<div class="pb-row"><span class="pb-label">Productive ratio improvement</span><span class="pb-val" style="color:#16a34a">+'+Math.max(0,optProductivePct-naiveProductivePct)+'%</span></div>'+
     '</div></div>';
+
+  // Idle card — only show when time windows present
+  if(hasTimeWindows()){
+    html+='<div class="idle-card">'+
+      '<div class="idle-card-header">'+
+        '<span class="idle-card-title">💤 Idle / Waiting Time</span>'+
+        '<button class="idle-i-btn" onclick="toggleExpandById(\'idle-explain\')">ℹ️ How calculated?</button>'+
+      '</div>'+
+      '<div class="idle-explain" id="idle-explain">'+
+        'Idle time is the time spent waiting at a location before a visit is possible — this happens when a stop has a time window set (e.g. "visit only between 3–3:30 PM"). Without RouteWise, a random unplanned route can send the agent to a time-windowed stop hours too early, forcing them to wait doing nothing. We simulate 50 random orderings of your stops using actual Google Maps road times and average the waiting time — that is the idle time without RouteWise. RouteWise sequences your stops so you arrive close to when the window opens, minimising wasted waiting.'+
+      '</div>'+
+      '<div class="idle-compare">'+
+        '<div class="idle-box bad"><div class="idle-box-label">❌ Without</div><div class="idle-box-val">'+fmtMin(naive.idleMin)+'</div><div class="idle-box-sub">avg wasted waiting</div></div>'+
+        '<div class="idle-box good"><div class="idle-box-label">✅ Optimized</div><div class="idle-box-val">'+fmtMin(optIdleMin)+'</div><div class="idle-box-sub">idle time</div></div>'+
+      '</div></div>';
+  }
 
   // Timeline
   html+='<div class="timeline-label">🗓 Stop-by-Stop Timeline</div>';
-
   var allNodes=[];
   if(startPlace)allNodes.push({type:'start',s:startPlace});
   optimized.forEach(function(s,i){allNodes.push({type:'stop',s:s,idx:i});});
@@ -736,9 +888,7 @@ function renderRoute(dayStart){
   var merged=[],bIdx=0;
   allNodes.forEach(function(node){
     if(node.type==='stop'&&node.s.arrivalTime){
-      while(bIdx<sortedBreaks.length&&toMin(sortedBreaks[bIdx].time)<node.s.arrivalTime){
-        merged.push({type:'break',b:sortedBreaks[bIdx]});bIdx++;
-      }
+      while(bIdx<sortedBreaks.length&&toMin(sortedBreaks[bIdx].time)<node.s.arrivalTime){merged.push({type:'break',b:sortedBreaks[bIdx]});bIdx++;}
     }
     merged.push(node);
   });
@@ -746,43 +896,31 @@ function renderRoute(dayStart){
 
   merged.forEach(function(node,ni){
     var isLast=ni===merged.length-1;
-
     if(node.type==='break'){
       var b=node.b;
-      html+='<div class="rstop">'+
-        '<div class="rstop-left"><div class="rstop-dot bdot">☕</div>'+(!isLast?'<div class="rstop-line"></div>':'')+' </div>'+
-        '<div class="rstop-body break-body">'+
-          '<div class="rstop-name">'+esc(b.name)+'</div>'+
-          '<div class="time-breakdown">'+
-            '<div class="tb-row"><div class="tb-icon">🕐</div><div class="tb-label">Starts at</div><div class="tb-val tb-arrive">'+fmtTime(toMin(b.time))+'</div></div>'+
-            '<div class="tb-row"><div class="tb-icon">⏱</div><div class="tb-label">Duration</div><div class="tb-val tb-stay">'+b.dur+' min</div></div>'+
-            '<div class="tb-row"><div class="tb-icon">🔴</div><div class="tb-label">Ends at</div><div class="tb-val tb-depart">'+fmtTime(toMin(b.time)+b.dur)+'</div></div>'+
-          '</div>'+
-        '</div></div><div class="spacer"></div>';
+      html+='<div class="rstop"><div class="rstop-left"><div class="rstop-dot bdot">☕</div>'+(!isLast?'<div class="rstop-line"></div>':'')+' </div>'+
+        '<div class="rstop-body break-body"><div class="rstop-name">'+esc(b.name)+'</div>'+
+        '<div class="time-breakdown">'+
+          '<div class="tb-row"><div class="tb-icon">🕐</div><div class="tb-label">Starts at</div><div class="tb-val tb-arrive">'+fmtTime(toMin(b.time))+'</div></div>'+
+          '<div class="tb-row"><div class="tb-icon">⏱</div><div class="tb-label">Duration</div><div class="tb-val tb-stay">'+b.dur+' min</div></div>'+
+          '<div class="tb-row"><div class="tb-icon">🔴</div><div class="tb-label">Ends at</div><div class="tb-val tb-depart">'+fmtTime(toMin(b.time)+b.dur)+'</div></div>'+
+        '</div></div></div><div class="spacer"></div>';
       return;
     }
-
     var s=node.s;
     var dc=node.type==='start'?'sdot':node.type==='end'?'edot':'pdot';
     var label=node.type==='start'?'S':node.type==='end'?'E':String(node.idx+1);
     var isBreach=node.type==='stop'&&s.from&&s.arrivalTime&&s.arrivalTime>toMin(s.to);
 
-    // Show idle/waiting block BEFORE this stop
     if(node.type==='stop'&&s.idleBefore&&s.idleBefore>1){
-      html+='<div class="idle-segment">'+
-        '<div class="idle-seg-left"><div class="idle-seg-dot">⏳</div><div class="idle-seg-line"></div></div>'+
-        '<div class="idle-seg-body">'+
-          '<div class="idle-seg-title">Waiting — '+fmtMin(s.idleBefore)+'</div>'+
-          '<div class="idle-seg-sub">'+(s.from?'Time window opens at '+s.from:'Break in progress')+'</div>'+
-        '</div></div><div class="spacer"></div>';
+      html+='<div class="idle-segment"><div class="idle-seg-left"><div class="idle-seg-dot">⏳</div><div class="idle-seg-line"></div></div>'+
+        '<div class="idle-seg-body"><div class="idle-seg-title">Waiting — '+fmtMin(s.idleBefore)+'</div>'+
+        '<div class="idle-seg-sub">'+(s.from?'Time window opens at '+s.from:'Break in progress')+'</div></div></div><div class="spacer"></div>';
     }
 
-    html+='<div class="rstop">'+
-      '<div class="rstop-left"><div class="rstop-dot '+dc+(isBreach?' wdot':'')+'">'+label+'</div>'+(!isLast?'<div class="rstop-line"></div>':'')+' </div>'+
-      '<div class="rstop-body'+(isBreach?' breach':'')+'">'+
-        '<div class="rstop-name">'+esc(s.name)+'</div>'+
-        '<div class="rstop-addr">'+esc(s.address)+'</div>'+
-        (isBreach?'<div class="breach-tag">⚠️ Missed — arrived '+fmtTime(s.arrivalTime)+', window closed at '+s.to+'</div>':'');
+    html+='<div class="rstop"><div class="rstop-left"><div class="rstop-dot '+dc+(isBreach?' wdot':'')+'">'+label+'</div>'+(!isLast?'<div class="rstop-line"></div>':'')+' </div>'+
+      '<div class="rstop-body'+(isBreach?' breach':'')+'"><div class="rstop-name">'+esc(s.name)+'</div><div class="rstop-addr">'+esc(s.address)+'</div>'+
+      (isBreach?'<div class="breach-tag">⚠️ Missed — arrived '+fmtTime(s.arrivalTime)+', window closed at '+s.to+'</div>':'');
 
     if(node.type==='stop'){
       html+='<div class="time-breakdown">'+
@@ -791,26 +929,19 @@ function renderRoute(dayStart){
         (s.departTime?'<div class="tb-row"><div class="tb-icon">🔴</div><div class="tb-label">Depart at</div><div class="tb-val tb-depart">'+fmtTime(s.departTime)+'</div></div>':'')+
         (s.travelToNext?'<div class="tb-row"><div class="tb-icon">🚗</div><div class="tb-label">Drive to next</div><div class="tb-val tb-travel">'+fmtMin(s.travelToNext)+' · '+s.kmToNext.toFixed(1)+' km</div></div>':'')+
         (s.from?'<div class="tb-row"><div class="tb-icon">⏰</div><div class="tb-label">Time window</div><div class="tb-val">'+s.from+' – '+s.to+'</div></div>':'')+
-      '</div>'+
-      '<button class="nav-btn" onclick="navTo('+s.lat+','+s.lon+')">🗺 Open in Google Maps</button>';
+      '</div><button class="nav-btn" onclick="navTo('+s.lat+','+s.lon+')">🗺 Open in Google Maps</button>';
     }
     html+='</div></div>';
 
-    // Gap nudge — triggers on totalGapToNext > 30 min (travel + waiting combined)
+    // Gap nudge — triggers on total gap > 30 min
     if(node.type==='stop'&&!isLast&&s.totalGapToNext&&s.totalGapToNext>30){
-      var gapMin=Math.round(s.totalGapToNext);
-      var nextNode=merged[ni+1];
-      var isWaiting=nextNode&&nextNode.type==='stop'&&nextNode.s.idleBefore>1;
-      html+='<div class="gap-nudge">'+
-        '<div class="gap-nudge-left"><div class="gap-nudge-line"></div></div>'+
-        '<div class="gap-nudge-body">'+
-          '<div class="gap-nudge-title">💡 '+fmtMin(gapMin)+' free time in this gap</div>'+
-          '<div class="gap-nudge-sub">'+(isWaiting?'This includes travel time plus waiting for the next time window to open. ':'')+'You could fit another merchant visit in this slot — add a stop and re-optimize.</div>'+
-          '<button class="gap-nudge-btn" onclick="addStopFromGap()">+ Add a stop here</button>'+
-        '</div>'+
-      '</div>';
+      var hasIdle=(s.totalGapToNext-s.travelToNext)>1;
+      html+='<div class="gap-nudge"><div class="gap-nudge-left"><div class="gap-nudge-line"></div></div>'+
+        '<div class="gap-nudge-body"><div class="gap-nudge-title">💡 '+fmtMin(s.totalGapToNext)+' free time in this gap</div>'+
+        '<div class="gap-nudge-sub">'+(hasIdle?'Includes travel time and waiting for the next time window. ':'')+'You could fit another merchant visit here — add a stop and re-optimize.</div>'+
+        '<button class="gap-nudge-btn" onclick="addStopFromGap()">+ Add a stop here</button>'+
+        '</div></div>';
     }
-
     if(!isLast)html+='<div class="spacer"></div>';
   });
 
@@ -818,67 +949,19 @@ function renderRoute(dayStart){
   el.innerHTML=html;
 }
 
-// ── TOGGLE EXPAND ─────────────────────────────────────────────────────────────
+// ── TOGGLE ────────────────────────────────────────────────────────────────────
 function toggleExpand(btn){
-  var body=btn.nextElementSibling;
-  if(!body)return;
+  var body=btn.nextElementSibling;if(!body)return;
   var open=body.classList.contains('open');
   body.classList.toggle('open',!open);
   btn.textContent=(!open?'ℹ️ How is this calculated? ▴':'ℹ️ How is this calculated? ▾');
 }
-
 function toggleExpandById(id){
-  var el=document.getElementById(id);
-  if(!el)return;
-  el.classList.toggle('open');
+  var el=document.getElementById(id);if(el)el.classList.toggle('open');
 }
 
-// ── GAP NUDGE ACTION ──────────────────────────────────────────────────────────
-function addStopFromGap(){
-  _autoReoptimize=true;
-  goTab('stops');
-  showMsg('Pin your new stop — route will re-optimize automatically');
-}
-
-// ── EXPORT FOR HEATMAP (Feature 6) ───────────────────────────────────────────
-function exportRoute(){
-  if(!optimized.length){showMsg('Optimize your route first');return;}
-  var agentName=getAgentName();
-  var today=new Date();
-  var dateStr=today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
-
-  // Build export data — JSON with all coordinates for heatmap
-  var exportData={
-    agent: agentName,
-    date: dateStr,
-    total_stops: optimized.length,
-    start_point: startPlace?{name:startPlace.name,lat:startPlace.lat,lon:startPlace.lon}:null,
-    end_point: endPlace?{name:endPlace.name,lat:endPlace.lat,lon:endPlace.lon}:null,
-    stops: optimized.map(function(s,i){
-      return{
-        stop_number: i+1,
-        name: s.name,
-        lat: s.lat,
-        lon: s.lon,
-        visit_duration_min: s.dur||20,
-        arrival_time: s.arrivalTime?fmtTime(s.arrivalTime):'',
-        departure_time: s.departTime?fmtTime(s.departTime):''
-      };
-    })
-  };
-
-  var json=JSON.stringify(exportData,null,2);
-  var blob=new Blob([json],{type:'application/json'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');
-  a.href=url;
-  a.download='route_'+agentName.replace(/\s+/g,'_')+'_'+dateStr+'.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showMsg('✓ Route exported — share this file for heatmap');
-}
+// ── GAP NUDGE ─────────────────────────────────────────────────────────────────
+function addStopFromGap(){_autoReoptimize=true;goTab('stops');showMsg('Pin your new stop — route will re-optimize automatically');}
 
 // ── DRAW OPTIMIZED MAP ────────────────────────────────────────────────────────
 function drawOptimized(){
@@ -902,6 +985,70 @@ function drawOptimized(){
     }
   });
   gmap.fitBounds(bounds,50);
+}
+
+// ── EXPORT ────────────────────────────────────────────────────────────────────
+function exportRoute(optKm,optTravMin,optVisitMin,optProductivePct,naiveKm,naiveTravMin,naiveProductivePct,fuelSaved,twMet,twTotal){
+  if(!optimized.length){showMsg('Optimize your route first');return;}
+  var today=new Date();
+  var dateStr=today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+  var agentName=getAgentName();
+
+  var exportData={
+    meta:{
+      agent: agentName,
+      date: dateStr,
+      day_start: document.getElementById('day-start-time').value,
+      day_end: document.getElementById('day-end-time').value,
+      total_stops_visited: optimized.length,
+      data_source: 'Google Maps Directions API — actual road distances and times'
+    },
+    impact_metrics:{
+      optimised_distance_km: parseFloat(optKm),
+      unoptimised_baseline_km: parseFloat(naiveKm),
+      distance_saved_km: Math.max(0,parseFloat(naiveKm)-parseFloat(optKm)).toFixed(2),
+      optimised_travel_time_min: parseFloat(optTravMin).toFixed(1),
+      unoptimised_travel_time_min: parseFloat(naiveTravMin).toFixed(1),
+      travel_time_saved_min: Math.max(0,parseFloat(naiveTravMin)-parseFloat(optTravMin)).toFixed(1),
+      optimised_productive_ratio_pct: optProductivePct,
+      unoptimised_productive_ratio_pct: naiveProductivePct,
+      productive_ratio_improvement_pct: Math.max(0,optProductivePct-naiveProductivePct),
+      visit_time_min: optVisitMin,
+      fuel_cost_saved_inr: parseFloat(fuelSaved).toFixed(0),
+      time_windows_set: twTotal,
+      time_windows_met: twMet,
+      time_window_compliance_pct: twTotal>0?Math.round(twMet/twTotal*100):null,
+      baseline_method: 'Average of 50 random route orderings using Google Maps road distances'
+    },
+    stops: optimized.map(function(s,i){
+      return{
+        stop_number: i+1,
+        name: s.name,
+        address: s.address,
+        lat: s.lat,
+        lon: s.lon,
+        visit_duration_min: s.dur||20,
+        arrival_time: s.arrivalTime?fmtTime(s.arrivalTime):'',
+        departure_time: s.departTime?fmtTime(s.departTime):'',
+        road_distance_from_prev_km: s.travelledKm?parseFloat(s.travelledKm.toFixed(2)):null,
+        road_travel_time_from_prev_min: s.travelledMin?parseFloat(s.travelledMin.toFixed(1)):null,
+        time_window: s.from?(s.from+' – '+s.to):null,
+        time_window_met: s.from?(s.arrivalTime<=toMin(s.to)):null
+      };
+    }),
+    start_point: startPlace?{name:startPlace.name,lat:startPlace.lat,lon:startPlace.lon}:null,
+    end_point: endPlace?{name:endPlace.name,lat:endPlace.lat,lon:endPlace.lon}:null
+  };
+
+  var json=JSON.stringify(exportData,null,2);
+  var blob=new Blob([json],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download='routewise_'+agentName.replace(/\s+/g,'_')+'_'+dateStr+'.json';
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+  showMsg('✓ Exported — share this file for analysis');
 }
 
 function navTo(lat,lon){window.open('https://www.google.com/maps/dir/?api=1&destination='+lat+','+lon+'&travelmode=driving','_blank');}
