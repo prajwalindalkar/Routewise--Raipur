@@ -38,7 +38,7 @@ body { display: flex; flex-direction: column; }
 .se-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
 .se-dot.s { background: #22c55e; }
 .se-dot.e { background: #ef4444; }
-.se-info { flex: 1; min-width: 0; }
+.se-info { flex: 1; min-width: 120px; }
 .se-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .se-addr { font-size: 11px; color: #999; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
 .se-empty { font-size: 13px; color: #bbb; }
@@ -46,17 +46,13 @@ body { display: flex; flex-direction: column; }
 .se-pin-btn { background: #f5f0ff; border: 1px solid #c4b5fd; border-radius: 8px; padding: 6px 9px; font-size: 11px; color: #6d28d9; cursor: pointer; white-space: nowrap; }
 .se-loc-btn { background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 6px 9px; font-size: 11px; color: #166534; cursor: pointer; white-space: nowrap; }
 .se-clear-btn { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 6px 8px; font-size: 11px; color: #ef4444; cursor: pointer; }
-
-/* Lat/long input for start/end */
 .se-latlong-row { padding: 0 12px 10px; display: flex; gap: 6px; }
 .se-latlong-input { flex: 1; padding: 7px 10px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 12px; outline: none; color: #111; }
 .se-latlong-input:focus { border-color: #5f259f; }
-.se-latlong-btn { padding: 7px 12px; background: #5f259f; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-
+.se-latlong-btn { padding: 7px 12px; background: #5f259f; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
 .time-row { display: flex; align-items: center; gap: 8px; padding: 0 12px 10px; }
 .time-row-label { font-size: 12px; color: #555; white-space: nowrap; }
 .time-input { border: 1.5px solid #ddd; border-radius: 8px; padding: 6px 10px; font-size: 13px; color: #111; outline: none; }
-.time-input:focus { border-color: #5f259f; }
 
 .break-card { background: white; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 1px 5px rgba(0,0,0,.09); overflow: hidden; }
 .break-row { display: flex; align-items: center; gap: 8px; padding: 10px 12px; }
@@ -68,24 +64,21 @@ body { display: flex; flex-direction: column; }
 
 /* Stop card */
 .stop-card { background: white; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 1px 5px rgba(0,0,0,.09); overflow: hidden; }
-.stop-row { display: flex; align-items: center; gap: 10px; padding: 11px 12px 8px; }
+.stop-row { display: flex; align-items: center; gap: 8px; padding: 11px 12px 8px; }
 .stop-num { width: 28px; height: 28px; border-radius: 50%; background: #5f259f; color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .stop-info { flex: 1; min-width: 0; }
 .stop-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .stop-meta-text { font-size: 11px; color: #999; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stop-actions { display: flex; gap: 5px; flex-shrink: 0; }
+.stop-edit { width: 28px; height: 28px; background: #f0f9ff; border: none; border-radius: 50%; font-size: 14px; color: #0369a1; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .stop-del { width: 28px; height: 28px; background: #fef2f2; border: none; border-radius: 50%; font-size: 18px; color: #ef4444; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .stop-details { padding: 0 12px 10px; }
-.visit-type-badge { display: inline-block; background: #f3e8ff; color: #6d28d9; border-radius: 5px; padding: 2px 8px; font-size: 11px; font-weight: 600; margin-bottom: 6px; }
-.mid-badge { display: inline-block; background: #e0f2fe; color: #0369a1; border-radius: 5px; padding: 2px 8px; font-size: 11px; font-weight: 600; margin-bottom: 6px; margin-left: 4px; }
-.dur-wrap { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.visit-type-badge { display: inline-block; background: #f3e8ff; color: #6d28d9; border-radius: 5px; padding: 2px 8px; font-size: 11px; font-weight: 600; margin-right: 4px; margin-bottom: 4px; }
+.mid-badge { display: inline-block; background: #e0f2fe; color: #0369a1; border-radius: 5px; padding: 2px 8px; font-size: 11px; font-weight: 600; margin-bottom: 4px; }
+.approx-badge { display: inline-block; background: #fef3c7; color: #92400e; border-radius: 5px; padding: 2px 8px; font-size: 11px; font-weight: 600; margin-bottom: 4px; margin-left: 4px; }
+.dur-wrap { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
 .dur-wrap input[type=number] { border: 1px solid #ddd; border-radius: 6px; padding: 5px 8px; font-size: 13px; width: 65px; color: #111; }
 .dur-wrap span { font-size: 12px; color: #555; }
-.meta-btn { background: none; border: 1px dashed #a78bfa; color: #7c3aed; font-size: 11px; border-radius: 6px; padding: 4px 9px; cursor: pointer; }
-.meta-label { font-size: 11px; color: #7c3aed; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; }
-.meta-remove { background: none; border: none; color: #ef4444; font-size: 11px; cursor: pointer; }
-.time-fields { display: flex; align-items: center; gap: 6px; }
-.time-fields input[type=time] { border: 1px solid #ddd; border-radius: 6px; padding: 5px 7px; font-size: 12px; flex: 1; color: #111; }
-.time-sep { font-size: 11px; color: #999; }
 .empty-msg { text-align: center; padding: 30px 20px; color: #bbb; font-size: 14px; line-height: 1.8; }
 .empty-msg .big { font-size: 40px; margin-bottom: 10px; }
 
@@ -94,27 +87,33 @@ body { display: flex; flex-direction: column; }
 .opt-btn { width: 100%; padding: 12px; background: #22c55e; color: white; border: none; border-radius: 11px; font-size: 14px; font-weight: 700; cursor: pointer; }
 .opt-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-/* Add stop form modal */
+/* Stop form */
 .form-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9000; display: none; align-items: flex-end; justify-content: center; }
 .form-overlay.show { display: flex; }
-.stop-form { background: white; border-radius: 20px 20px 0 0; padding: 20px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+.stop-form { background: white; border-radius: 20px 20px 0 0; padding: 20px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .form-title { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
 .form-close { background: #f3f4f6; border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .form-field { margin-bottom: 14px; }
 .form-label { font-size: 12px; font-weight: 600; color: #555; margin-bottom: 5px; display: block; }
-.form-input { width: 100%; padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 10px; font-size: 14px; outline: none; color: #111; }
+.form-input { width: 100%; padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 10px; font-size: 14px; outline: none; color: #111; background: white; }
 .form-input:focus { border-color: #5f259f; }
 .form-select { width: 100%; padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 10px; font-size: 14px; outline: none; color: #111; background: white; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23555' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
 .form-select:focus { border-color: #5f259f; }
-.form-latlong-row { display: flex; gap: 8px; }
+.form-latlong-row { display: flex; gap: 8px; margin-bottom: 8px; }
 .form-latlong-row .form-input { flex: 1; }
 .form-latlong-btn { padding: 10px 12px; background: #f5f0ff; border: 1px solid #c4b5fd; border-radius: 10px; font-size: 12px; color: #6d28d9; cursor: pointer; white-space: nowrap; }
 .form-latlong-or { font-size: 12px; color: #999; text-align: center; margin: 6px 0; }
-.form-loc-preview { background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #166534; margin-top: 6px; display: none; }
+.form-pin-btn { width: 100%; padding: 10px; background: #f5f0ff; border: 1.5px dashed #a78bfa; border-radius: 10px; font-size: 13px; color: #6d28d9; cursor: pointer; }
+.form-loc-preview { background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #166534; margin-top: 8px; display: none; }
 .form-loc-preview.show { display: block; }
-.form-submit { width: 100%; padding: 13px; background: #5f259f; color: white; border: none; border-radius: 11px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 4px; }
+.form-time-row { display: flex; align-items: center; gap: 8px; }
+.form-time-row .form-input { flex: 1; }
+.form-time-sep { font-size: 12px; color: #999; }
+.form-submit { width: 100%; padding: 13px; background: #5f259f; color: white; border: none; border-radius: 11px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px; }
 .other-input { width: 100%; padding: 8px 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; color: #111; margin-top: 6px; display: none; }
 .other-input.show { display: block; }
+.onboarding-note { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 8px 12px; font-size: 11px; color: #92400e; margin-top: 6px; display: none; }
+.onboarding-note.show { display: block; }
 
 #map-container { flex: 1; position: relative; min-height: 0; }
 #map { width: 100%; height: 100%; }
@@ -122,24 +121,23 @@ body { display: flex; flex-direction: column; }
 .pin-banner b { flex: 1; }
 .pin-cancel-btn { background: #78350f; color: white; border: none; border-radius: 6px; padding: 6px 14px; font-size: 12px; cursor: pointer; }
 
-.loading-overlay { position: fixed; inset: 0; background: rgba(95,37,159,0.85); z-index: 99997; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+.loading-overlay { position: fixed; inset: 0; background: rgba(95,37,159,0.88); z-index: 99997; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
 .loading-overlay.show { display: flex; }
 .loading-spinner { width: 44px; height: 44px; border: 4px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
-.loading-text { color: white; font-size: 14px; font-weight: 600; }
+.loading-text { color: white; font-size: 14px; font-weight: 600; text-align: center; padding: 0 20px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* Route */
 .route-scroll { flex: 1; overflow-y: auto; padding: 10px; -webkit-overflow-scrolling: touch; }
 .route-hero { background: linear-gradient(135deg, #5f259f, #7c3aed); color: white; border-radius: 14px; padding: 14px; margin-bottom: 12px; }
 .rh-title { font-size: 15px; font-weight: 700; }
 .rh-sub { font-size: 11px; opacity: 0.75; margin-top: 2px; }
 .rstats { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-.rstat { flex: 1; min-width: 55px; background: rgba(255,255,255,.15); border-radius: 8px; padding: 7px 4px; text-align: center; }
+.rstat { flex: 1; min-width: 50px; background: rgba(255,255,255,.15); border-radius: 8px; padding: 7px 4px; text-align: center; }
 .rstat-v { font-size: 12px; font-weight: 700; }
 .rstat-l { font-size: 9px; opacity: .8; margin-top: 2px; }
 
-/* Overrun tip */
 .overrun-tip { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; font-size: 12px; color: #0369a1; line-height: 1.5; }
-
 .breach-banner { background: #fef2f2; border: 1.5px solid #fecaca; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
 .breach-title { font-size: 13px; font-weight: 700; color: #dc2626; margin-bottom: 8px; }
 .breach-item { font-size: 12px; color: #7f1d1d; margin-bottom: 6px; display: flex; gap: 6px; line-height: 1.5; }
@@ -147,7 +145,7 @@ body { display: flex; flex-direction: column; }
 .impact-card { background: white; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 5px rgba(0,0,0,.09); }
 .impact-title { font-size: 13px; font-weight: 700; color: #111; margin-bottom: 12px; }
 .cmp-section { margin-bottom: 12px; }
-.cmp-section-title { font-size: 11px; font-weight: 700; color: #555; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+.cmp-section-title { font-size: 11px; font-weight: 700; color: #555; margin-bottom: 6px; text-transform: uppercase; }
 .cmp-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
 .cmp-bar-label { font-size: 11px; width: 62px; flex-shrink: 0; font-weight: 600; }
 .cmp-bar-wrap { flex: 1; height: 14px; background: #f3f4f6; border-radius: 7px; overflow: hidden; }
@@ -202,6 +200,7 @@ body { display: flex; flex-direction: column; }
 .expand-body { font-size: 11px; color: #555; line-height: 1.7; margin-top: 8px; background: #f9fafb; border-radius: 8px; padding: 10px; display: none; }
 .expand-body.open { display: block; }
 
+/* Timeline */
 .timeline-label { font-size: 12px; font-weight: 700; color: #5f259f; margin: 14px 0 8px; }
 .rstop { display: flex; gap: 10px; }
 .rstop-left { display: flex; flex-direction: column; align-items: center; width: 28px; flex-shrink: 0; }
@@ -211,8 +210,11 @@ body { display: flex; flex-direction: column; }
 .rstop-dot.pdot { background: #5f259f; }
 .rstop-dot.bdot { background: #f59e0b; }
 .rstop-dot.wdot { background: #dc2626; }
+.rstop-dot.done { background: #16a34a; }
 .rstop-line { width: 2px; background: #e5e7eb; flex: 1; min-height: 16px; margin: 3px 0; }
+.rstop-line.done-line { background: #22c55e; }
 .rstop-body { flex: 1; background: white; border-radius: 11px; padding: 10px 12px; margin-bottom: 0; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+.rstop-body.done-card { background: #f0fdf4; border: 1.5px solid #86efac; }
 .rstop-body.breach { border: 1.5px solid #fca5a5; background: #fff5f5; }
 .rstop-body.break-body { background: #fffbeb; border: 1px dashed #fcd34d; box-shadow: none; }
 .rstop-name { font-size: 13px; font-weight: 600; }
@@ -221,6 +223,10 @@ body { display: flex; flex-direction: column; }
 .rbadge { border-radius: 5px; padding: 2px 7px; font-size: 10px; font-weight: 600; }
 .rbadge-type { background: #f3e8ff; color: #6d28d9; }
 .rbadge-mid { background: #e0f2fe; color: #0369a1; }
+.rbadge-approx { background: #fef3c7; color: #92400e; }
+.rbadge-verified { background: #dcfce7; color: #166534; }
+.rbadge-nearby { background: #fef9c3; color: #854d0e; }
+.rbadge-unverified { background: #fef2f2; color: #dc2626; }
 .breach-tag { display: inline-flex; align-items: center; gap: 4px; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 6px; padding: 3px 8px; font-size: 11px; font-weight: 700; color: #dc2626; margin-top: 6px; }
 .time-breakdown { margin-top: 8px; border-top: 1px solid #f3f4f6; padding-top: 8px; }
 .tb-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 12px; }
@@ -232,11 +238,14 @@ body { display: flex; flex-direction: column; }
 .tb-stay { color: #92400e; }
 .tb-depart { color: #6d28d9; }
 .tb-travel { color: #374151; }
-
-/* Inline duration edit in route */
-.inline-dur { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+.inline-dur { display: flex; align-items: center; gap: 6px; }
 .inline-dur input { border: 1px solid #ddd; border-radius: 6px; padding: 3px 6px; font-size: 12px; width: 55px; color: #111; }
 .inline-dur span { font-size: 11px; color: #888; }
+
+/* Done button */
+.done-btn { width: 100%; padding: 9px; background: #16a34a; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+.done-info { background: #f0fdf4; border-radius: 8px; padding: 8px 10px; margin-top: 6px; font-size: 11px; color: #166534; }
+.nav-btn { width: 100%; padding: 9px; background: #128c7e; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 8px; }
 
 .idle-segment { display: flex; gap: 10px; }
 .idle-seg-left { display: flex; flex-direction: column; align-items: center; width: 28px; flex-shrink: 0; }
@@ -254,17 +263,19 @@ body { display: flex; flex-direction: column; }
 .gap-nudge-sub { font-size: 11px; color: #7c3aed; margin-top: 3px; line-height: 1.5; }
 .gap-nudge-btn { margin-top: 8px; padding: 7px 14px; background: #5f259f; color: white; border: none; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-.nav-btn { width: 100%; padding: 9px; background: #128c7e; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 8px; }
 .spacer { height: 8px; }
 
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 99998; display: none; align-items: center; justify-content: center; padding: 20px; }
 .modal-overlay.show { display: flex; }
 .modal { background: white; border-radius: 16px; padding: 24px; max-width: 320px; width: 100%; }
 .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-.modal-body { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 20px; }
+.modal-body { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 16px; }
+.modal-dur-input { width: 100%; padding: 10px; border: 1.5px solid #ddd; border-radius: 10px; font-size: 16px; text-align: center; color: #111; outline: none; margin-bottom: 16px; }
+.modal-dur-input:focus { border-color: #5f259f; }
 .modal-btns { display: flex; gap: 10px; }
 .modal-cancel { flex: 1; padding: 11px; background: #f3f4f6; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; color: #555; cursor: pointer; }
-.modal-confirm { flex: 1; padding: 11px; background: #dc2626; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; color: white; cursor: pointer; }
+.modal-confirm { flex: 1; padding: 11px; background: #16a34a; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; color: white; cursor: pointer; }
+.modal-confirm.red { background: #dc2626; }
 
 .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 9px 18px; border-radius: 22px; font-size: 13px; z-index: 99999; opacity: 0; transition: opacity .3s; pointer-events: none; max-width: 90vw; text-align: center; }
 .toast.show { opacity: 1; }
@@ -290,10 +301,9 @@ body { display: flex; flex-direction: column; }
 <!-- STOPS PANEL -->
 <div class="panel active" id="panel-stops">
   <div class="stops-scroll" id="stops-scroll">
-
     <div class="section-label">👤 Agent Name</div>
     <div class="agent-card">
-      <div class="agent-card-title">Enter your name — saved permanently, only needs to be set once</div>
+      <div class="agent-card-title">Enter your name — saved permanently, only set once</div>
       <div class="agent-input-row">
         <input type="text" id="agent-name-input" class="agent-input" placeholder="e.g. Rahul Kumar" autocomplete="off"/>
         <button class="agent-save-btn" onclick="saveAgentName()">Save</button>
@@ -311,9 +321,8 @@ body { display: flex; flex-direction: column; }
           <button class="se-clear-btn" id="start-clear" style="display:none" onclick="clearPoint('start')">✕</button>
         </div>
       </div>
-      <!-- Lat/long input for start -->
       <div class="se-latlong-row">
-        <input type="text" class="se-latlong-input" id="start-latlong" placeholder="Or paste lat, long  e.g. 21.2514, 81.6296" autocomplete="off"/>
+        <input type="text" class="se-latlong-input" id="start-latlong" placeholder="Paste lat, long — e.g. 21.2514, 81.6296" autocomplete="off"/>
         <button class="se-latlong-btn" onclick="applyLatLong('start')">Set</button>
       </div>
       <div class="time-row">
@@ -332,9 +341,8 @@ body { display: flex; flex-direction: column; }
           <button class="se-clear-btn" id="end-clear" style="display:none" onclick="clearPoint('end')">✕</button>
         </div>
       </div>
-      <!-- Lat/long input for end -->
       <div class="se-latlong-row">
-        <input type="text" class="se-latlong-input" id="end-latlong" placeholder="Or paste lat, long  e.g. 21.2514, 81.6296" autocomplete="off"/>
+        <input type="text" class="se-latlong-input" id="end-latlong" placeholder="Paste lat, long — e.g. 21.2514, 81.6296" autocomplete="off"/>
         <button class="se-latlong-btn" onclick="applyLatLong('end')">Set</button>
       </div>
       <div class="time-row">
@@ -349,11 +357,11 @@ body { display: flex; flex-direction: column; }
 
     <div class="section-label" style="margin-top:4px;">🏪 Merchant Stops</div>
     <div id="stops-list">
-      <div class="empty-msg"><div class="big">🏪</div>Tap "Add Stop" below to add merchant locations.</div>
+      <div class="empty-msg"><div class="big">🏪</div>Tap "Add Merchant Stop" below.</div>
     </div>
   </div>
   <div class="bottom-bar">
-    <button class="add-stop-btn" onclick="openStopForm()">+ Add Merchant Stop</button>
+    <button class="add-stop-btn" onclick="openStopForm(null)">+ Add Merchant Stop</button>
     <button class="opt-btn" id="opt-btn" onclick="optimize()" disabled>✨ Optimize Route</button>
   </div>
 </div>
@@ -376,24 +384,21 @@ body { display: flex; flex-direction: column; }
   </div>
 </div>
 
-<!-- ADD STOP FORM -->
+<!-- STOP FORM (add / edit) -->
 <div class="form-overlay" id="stop-form-overlay">
   <div class="stop-form">
     <div class="form-title">
-      🏪 Add Merchant Stop
+      <span id="form-title-text">🏪 Add Merchant Stop</span>
       <button class="form-close" onclick="closeStopForm()">×</button>
     </div>
-
     <div class="form-field">
       <label class="form-label">Shop Name *</label>
       <input type="text" class="form-input" id="f-name" placeholder="e.g. Sharma Medical Store" autocomplete="off"/>
     </div>
-
     <div class="form-field">
       <label class="form-label">MID — Merchant ID (optional)</label>
       <input type="text" class="form-input" id="f-mid" placeholder="e.g. MID123456" autocomplete="off"/>
     </div>
-
     <div class="form-field">
       <label class="form-label">Type of Visit *</label>
       <select class="form-select" id="f-type" onchange="handleVisitTypeChange()">
@@ -407,35 +412,45 @@ body { display: flex; flex-direction: column; }
         <option value="Other">Other</option>
       </select>
       <input type="text" class="other-input" id="f-other" placeholder="Describe visit type…"/>
+      <div class="onboarding-note" id="onboarding-note">📍 Since this is an Onboarding visit, the location may be approximate. A 10-minute buffer will be added to your visit time in the optimization to account for finding the exact location.</div>
     </div>
-
     <div class="form-field">
-      <label class="form-label">Location *</label>
+      <label class="form-label">Location * — paste lat, long or drop pin</label>
       <div class="form-latlong-row">
-        <input type="text" class="form-input" id="f-latlong" placeholder="Paste lat, long  e.g. 21.2514, 81.6296" autocomplete="off"/>
+        <input type="text" class="form-input" id="f-latlong" placeholder="e.g. 21.2514, 81.6296" autocomplete="off"/>
         <button class="form-latlong-btn" onclick="applyFormLatLong()">✓ Use</button>
       </div>
       <div class="form-latlong-or">— or —</div>
-      <button class="form-latlong-btn" style="width:100%;padding:10px;border-radius:10px;" onclick="openMapForStop()">📌 Drop pin on map</button>
+      <button class="form-pin-btn" onclick="openMapForStop()">📌 Drop pin on map</button>
       <div class="form-loc-preview" id="f-loc-preview"></div>
     </div>
-
     <div class="form-field">
-      <label class="form-label">Visit Duration (min)</label>
+      <label class="form-label">Visit Duration (min) *</label>
       <input type="number" class="form-input" id="f-dur" value="15" min="1" max="300"/>
     </div>
-
     <div class="form-field">
-      <label class="form-label">Time Window (optional — only if merchant has specific availability)</label>
-      <div class="time-fields">
-        <input type="time" id="f-from" class="form-input" style="flex:1"/>
-        <span class="time-sep">to</span>
-        <input type="time" id="f-to" class="form-input" style="flex:1"/>
+      <label class="form-label">Time Window (optional)</label>
+      <div class="form-time-row">
+        <input type="time" id="f-from" class="form-input"/>
+        <span class="form-time-sep">to</span>
+        <input type="time" id="f-to" class="form-input"/>
       </div>
       <div style="font-size:11px;color:#999;margin-top:4px;">Leave blank if no specific time required</div>
     </div>
+    <button class="form-submit" id="form-submit-btn" onclick="submitStopForm()">Add This Stop →</button>
+  </div>
+</div>
 
-    <button class="form-submit" onclick="submitStopForm()">Add This Stop →</button>
+<!-- Done confirmation modal -->
+<div class="modal-overlay" id="done-modal">
+  <div class="modal">
+    <div class="modal-title" id="done-modal-title">✓ Mark as Done</div>
+    <div class="modal-body">How long did you actually spend here?</div>
+    <input type="number" class="modal-dur-input" id="done-dur-input" min="1" max="300" placeholder="minutes"/>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeDoneModal()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmDone()">✓ Mark Done</button>
+    </div>
   </div>
 </div>
 
@@ -443,17 +458,17 @@ body { display: flex; flex-direction: column; }
 <div class="modal-overlay" id="clear-modal">
   <div class="modal">
     <div class="modal-title">🗑 Clear Route Data?</div>
-    <div class="modal-body">This will delete your start, end, all stops, breaks and optimized route. Your agent name will be kept.</div>
+    <div class="modal-body">This will delete your start, end, all stops, breaks and route. Your agent name is kept.</div>
     <div class="modal-btns">
       <button class="modal-cancel" onclick="closeClearModal()">Cancel</button>
-      <button class="modal-confirm" onclick="clearAll()">Yes, Clear</button>
+      <button class="modal-confirm red" onclick="clearAll()">Yes, Clear</button>
     </div>
   </div>
 </div>
 
 <div class="loading-overlay" id="loading-overlay">
   <div class="loading-spinner"></div>
-  <div class="loading-text">Calculating real road distances…</div>
+  <div class="loading-text" id="loading-text">Calculating real road distances…</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -465,15 +480,18 @@ var startPlace=null,endPlace=null;
 var pinMode=false,pinTarget='stop';
 var gmap,markersArr=[],polylines=[],geocoder,directionsService;
 var _autoReoptimize=false;
-var LS_KEY='routewise_raipur_v4';
+var LS_KEY='routewise_raipur_v5';
 var LS_AGENT='routewise_agent_name';
 var SHEETS_URL='https://script.google.com/macros/s/AKfycbzU8wZNHC1o2RRt74mbCPo9tbCJt0D3JiwkQmu52BAtlz25oQ3xdnvs8rMelUPsOBaqyw/exec';
 var reoptCount=0;
 var FUEL_RATE=6;
 var distCache={};
+var ONBOARDING_BUFFER=10; // extra minutes for onboarding visits
 
-// Pending stop form data (lat/lon set via map pin)
-var _formLat=null,_formLon=null,_formAddr='';
+// Form state — persists when navigating to map
+var _formState={lat:null,lon:null,addr:'',editId:null};
+// Done modal state
+var _doneStopId=null;
 
 // ── AGENT NAME ────────────────────────────────────────────────────────────────
 function saveAgentName(){
@@ -521,7 +539,7 @@ function clearAll(){
   renderPoints();renderStops();renderBreaks();updateOptBtn();
   if(gmap)redrawMarkers();
   document.getElementById('route-scroll').innerHTML='<div class="empty-msg"><div class="big">🛣️</div>Add stops and tap Optimize Route.</div>';
-  goTab('stops');showMsg('Route data cleared — your name is kept');
+  goTab('stops');showMsg('Route data cleared — name kept');
 }
 function confirmClearAll(){document.getElementById('clear-modal').classList.add('show');}
 function closeClearModal(){document.getElementById('clear-modal').classList.remove('show');}
@@ -539,7 +557,7 @@ function initGoogleMap(){
   if(loadFromStorage()){
     renderPoints();renderStops();renderBreaks();updateOptBtn();redrawMarkers();
     if(optimized.length){renderRoute();drawOptimized();showMsg('Session restored');}
-    else showMsg('Stops restored — ready to optimize');
+    else showMsg('Stops restored');
   }
 }
 
@@ -554,7 +572,7 @@ function goTab(t){
 
 // ── CURRENT LOCATION ─────────────────────────────────────────────────────────
 function useCurrentLocation(){
-  if(!navigator.geolocation){showMsg('GPS not supported on this device');return;}
+  if(!navigator.geolocation){showMsg('GPS not supported');return;}
   showMsg('Getting your location…');
   navigator.geolocation.getCurrentPosition(
     function(pos){
@@ -569,32 +587,30 @@ function useCurrentLocation(){
       });
     },
     function(err){
-      var msgs={1:'Location permission denied — allow in browser settings',2:'Location unavailable — try again',3:'Location timed out — try again'};
+      var msgs={1:'Location denied — allow in browser settings',2:'Location unavailable',3:'Timed out'};
       showMsg(msgs[err.code]||'Could not get location');
     },
     {enableHighAccuracy:true,timeout:10000,maximumAge:0}
   );
 }
 
-// ── LAT/LONG DIRECT INPUT ─────────────────────────────────────────────────────
+// ── LAT/LONG INPUT ────────────────────────────────────────────────────────────
 function parseLatLon(str){
   if(!str||!str.trim())return null;
-  // Handle formats: "21.2514, 81.6296" or "21.2514 81.6296" or "21.2514,81.6296"
   var parts=str.trim().split(/[\s,]+/).filter(function(p){return p.length>0;});
   if(parts.length<2)return null;
   var lat=parseFloat(parts[0]),lon=parseFloat(parts[1]);
-  if(isNaN(lat)||isNaN(lon))return null;
-  if(lat<-90||lat>90||lon<-180||lon>180)return null;
+  if(isNaN(lat)||isNaN(lon)||lat<-90||lat>90||lon<-180||lon>180)return null;
   return{lat:lat,lon:lon};
 }
 
 function applyLatLong(which){
   var inp=document.getElementById(which+'-latlong');
   var coords=parseLatLon(inp.value);
-  if(!coords){showMsg('Invalid coordinates. Use format: 21.2514, 81.6296');return;}
+  if(!coords){showMsg('Invalid coordinates. Use: 21.2514, 81.6296');return;}
   geocoder.geocode({location:{lat:coords.lat,lng:coords.lon}},function(res,st){
     var addr=(st==='OK'&&res[0])?res[0].formatted_address:coords.lat.toFixed(4)+', '+coords.lon.toFixed(4);
-    var name=(st==='OK'&&res[0])?res[0].formatted_address.split(',')[0]:'Location '+coords.lat.toFixed(4);
+    var name=(st==='OK'&&res[0])?res[0].formatted_address.split(',')[0]:'Location';
     var obj={name:name,address:addr,lat:coords.lat,lon:coords.lon};
     if(which==='start'){startPlace=obj;renderPoints();redrawMarkers();updateOptBtn();showMsg('✓ Start set');}
     else{endPlace=obj;renderPoints();redrawMarkers();showMsg('✓ End set');}
@@ -605,12 +621,12 @@ function applyLatLong(which){
 function applyFormLatLong(){
   var inp=document.getElementById('f-latlong');
   var coords=parseLatLon(inp.value);
-  if(!coords){showMsg('Invalid coordinates. Use format: 21.2514, 81.6296');return;}
-  _formLat=coords.lat;_formLon=coords.lon;
+  if(!coords){showMsg('Invalid coordinates. Use: 21.2514, 81.6296');return;}
+  _formState.lat=coords.lat;_formState.lon=coords.lon;
   geocoder.geocode({location:{lat:coords.lat,lng:coords.lon}},function(res,st){
-    _formAddr=(st==='OK'&&res[0])?res[0].formatted_address:coords.lat.toFixed(4)+', '+coords.lon.toFixed(4);
+    _formState.addr=(st==='OK'&&res[0])?res[0].formatted_address:coords.lat.toFixed(4)+', '+coords.lon.toFixed(4);
     var prev=document.getElementById('f-loc-preview');
-    prev.textContent='📍 '+_formAddr;prev.classList.add('show');
+    prev.textContent='📍 '+_formState.addr;prev.classList.add('show');
     showMsg('✓ Location set');
   });
 }
@@ -623,14 +639,25 @@ function startPin(target){
   document.getElementById('pin-banner').style.display='flex';
   goTab('map');
 }
+
 function cancelPin(){
   pinMode=false;
   document.getElementById('pin-banner').style.display='none';
-  // If we were pinning for stop form, go back to form
-  if(pinTarget==='stopform')goTab('stops');
+  if(pinTarget==='stopform'){
+    // Restore form state and reopen form
+    openStopForm(_formState.editId,true);
+  }
 }
 
 function openMapForStop(){
+  // Save current form state before navigating
+  _formState.name=document.getElementById('f-name').value;
+  _formState.mid=document.getElementById('f-mid').value;
+  _formState.type=document.getElementById('f-type').value;
+  _formState.other=document.getElementById('f-other').value;
+  _formState.dur=document.getElementById('f-dur').value;
+  _formState.from=document.getElementById('f-from').value;
+  _formState.to=document.getElementById('f-to').value;
   closeStopForm();
   pinMode=true;pinTarget='stopform';
   document.getElementById('pin-msg').textContent='🏪 Tap the merchant location on the map';
@@ -640,14 +667,10 @@ function openMapForStop(){
 
 function handlePinDrop(lat,lng){
   if(pinTarget==='stopform'){
-    // Coming back to stop form
-    _formLat=lat;_formLon=lng;
+    _formState.lat=lat;_formState.lon=lng;
     geocoder.geocode({location:{lat:lat,lng:lng}},function(res,st){
-      _formAddr=(st==='OK'&&res[0])?res[0].formatted_address:lat.toFixed(4)+', '+lng.toFixed(4);
+      _formState.addr=(st==='OK'&&res[0])?res[0].formatted_address:lat.toFixed(4)+', '+lng.toFixed(4);
       cancelPin();
-      openStopForm();
-      var prev=document.getElementById('f-loc-preview');
-      prev.textContent='📍 '+_formAddr;prev.classList.add('show');
     });
     return;
   }
@@ -665,29 +688,74 @@ function handlePinDrop(lat,lng){
 }
 
 // ── STOP FORM ─────────────────────────────────────────────────────────────────
-function openStopForm(){
-  _formLat=null;_formLon=null;_formAddr='';
-  document.getElementById('f-name').value='';
-  document.getElementById('f-mid').value='';
-  document.getElementById('f-type').value='';
-  document.getElementById('f-other').value='';
-  document.getElementById('f-other').classList.remove('show');
-  document.getElementById('f-latlong').value='';
-  document.getElementById('f-loc-preview').classList.remove('show');
-  document.getElementById('f-dur').value='15';
-  document.getElementById('f-from').value='';
-  document.getElementById('f-to').value='';
+function openStopForm(editId, restoreState){
+  _formState.editId=editId||null;
+  document.getElementById('form-title-text').textContent=editId?'✏️ Edit Stop':'🏪 Add Merchant Stop';
+  document.getElementById('form-submit-btn').textContent=editId?'Update Stop →':'Add This Stop →';
+
+  if(restoreState){
+    // Restore saved form state (coming back from map pin)
+    document.getElementById('f-name').value=_formState.name||'';
+    document.getElementById('f-mid').value=_formState.mid||'';
+    document.getElementById('f-type').value=_formState.type||'';
+    document.getElementById('f-other').value=_formState.other||'';
+    document.getElementById('f-dur').value=_formState.dur||'15';
+    document.getElementById('f-from').value=_formState.from||'';
+    document.getElementById('f-to').value=_formState.to||'';
+    document.getElementById('f-latlong').value='';
+    handleVisitTypeChange();
+    if(_formState.lat!==null){
+      var prev=document.getElementById('f-loc-preview');
+      prev.textContent='📍 '+(_formState.addr||_formState.lat.toFixed(4)+', '+_formState.lon.toFixed(4));
+      prev.classList.add('show');
+    }
+  } else if(editId){
+    // Load existing stop data
+    var s=stops.find(function(x){return x.id===editId;});
+    if(!s)return;
+    _formState.lat=s.lat;_formState.lon=s.lon;_formState.addr=s.address;
+    document.getElementById('f-name').value=s.name||'';
+    document.getElementById('f-mid').value=s.mid||'';
+    // Handle visit type — if it's not in standard list, put in Other
+    var standardTypes=['Sales Order Tagged','Sales Order Untagged','M0 & M1','Dropper & ReKYC','Visit on Appointment','Onboarding'];
+    if(standardTypes.indexOf(s.visitType)>=0){
+      document.getElementById('f-type').value=s.visitType;
+      document.getElementById('f-other').value='';
+    } else {
+      document.getElementById('f-type').value='Other';
+      document.getElementById('f-other').value=s.visitType||'';
+    }
+    document.getElementById('f-dur').value=s.dur||15;
+    document.getElementById('f-from').value=s.from||'';
+    document.getElementById('f-to').value=s.to||'';
+    document.getElementById('f-latlong').value='';
+    handleVisitTypeChange();
+    var prev=document.getElementById('f-loc-preview');
+    prev.textContent='📍 '+s.address;prev.classList.add('show');
+  } else {
+    // Fresh form
+    _formState={lat:null,lon:null,addr:'',editId:null};
+    document.getElementById('f-name').value='';
+    document.getElementById('f-mid').value='';
+    document.getElementById('f-type').value='';
+    document.getElementById('f-other').value='';
+    document.getElementById('f-other').classList.remove('show');
+    document.getElementById('onboarding-note').classList.remove('show');
+    document.getElementById('f-latlong').value='';
+    document.getElementById('f-loc-preview').classList.remove('show');
+    document.getElementById('f-dur').value='15';
+    document.getElementById('f-from').value='';
+    document.getElementById('f-to').value='';
+  }
   document.getElementById('stop-form-overlay').classList.add('show');
 }
 
-function closeStopForm(){
-  document.getElementById('stop-form-overlay').classList.remove('show');
-}
+function closeStopForm(){document.getElementById('stop-form-overlay').classList.remove('show');}
 
 function handleVisitTypeChange(){
   var val=document.getElementById('f-type').value;
-  var other=document.getElementById('f-other');
-  other.classList.toggle('show',val==='Other');
+  document.getElementById('f-other').classList.toggle('show',val==='Other');
+  document.getElementById('onboarding-note').classList.toggle('show',val==='Onboarding');
 }
 
 function submitStopForm(){
@@ -701,24 +769,36 @@ function submitStopForm(){
 
   if(!name){showMsg('Shop name is required');return;}
   if(!type){showMsg('Please select a visit type');return;}
-  if(_formLat===null||_formLon===null){showMsg('Please set the location — paste lat/long or drop a pin');return;}
+  if(_formState.lat===null||_formState.lon===null){showMsg('Please set the location');return;}
 
   var visitType=type==='Other'?(other||'Other'):type;
+  var isOnboarding=visitType==='Onboarding';
 
-  var s={
-    name:name,
-    mid:mid,
-    visitType:visitType,
-    address:_formAddr||(_formLat.toFixed(4)+', '+_formLon.toFixed(4)),
-    lat:_formLat,
-    lon:_formLon,
-    dur:dur,
-    from:from,
-    to:to
-  };
-
-  closeStopForm();
-  addStop(s);
+  if(_formState.editId){
+    // Update existing stop
+    var s=stops.find(function(x){return x.id===_formState.editId;});
+    if(s){
+      s.name=name;s.mid=mid;s.visitType=visitType;
+      s.address=_formState.addr||_formState.lat.toFixed(4)+', '+_formState.lon.toFixed(4);
+      s.lat=_formState.lat;s.lon=_formState.lon;
+      s.dur=dur;s.from=from;s.to=to;s.isOnboarding=isOnboarding;
+      // Clear distance cache for this stop
+      distCache={};
+    }
+    closeStopForm();
+    renderStops();redrawMarkers();saveToStorage();
+    showMsg('✓ Stop updated');
+  } else {
+    var newStop={
+      name:name,mid:mid,visitType:visitType,
+      address:_formState.addr||_formState.lat.toFixed(4)+', '+_formState.lon.toFixed(4),
+      lat:_formState.lat,lon:_formState.lon,
+      dur:dur,from:from,to:to,isOnboarding:isOnboarding,
+      done:false,actualDur:null,verificationStatus:null,actualLat:null,actualLon:null
+    };
+    closeStopForm();
+    addStop(newStop);
+  }
 }
 
 // ── START/END ─────────────────────────────────────────────────────────────────
@@ -764,6 +844,7 @@ function addStop(s){
   if(s.from===undefined)s.from='';
   if(s.to===undefined)s.to='';
   if(s.dur===undefined)s.dur=15;
+  if(s.done===undefined)s.done=false;
   stops.push(s);renderStops();redrawMarkers();updateOptBtn();saveToStorage();
   showMsg('✓ Added: '+s.name);
   if(_autoReoptimize){_autoReoptimize=false;setTimeout(function(){optimize();},400);}
@@ -773,7 +854,7 @@ function setDur(id,v){var s=stops.find(function(x){return x.id===id;});if(s){s.d
 
 function renderStops(){
   var el=document.getElementById('stops-list');updateOptBtn();
-  if(!stops.length){el.innerHTML='<div class="empty-msg"><div class="big">🏪</div>Tap "Add Stop" below to add merchant locations.</div>';return;}
+  if(!stops.length){el.innerHTML='<div class="empty-msg"><div class="big">🏪</div>Tap "Add Merchant Stop" below.</div>';return;}
   var html='<div style="text-align:right;font-size:11px;color:#999;margin-bottom:6px;">'+stops.length+' / 25 stops</div>';
   stops.forEach(function(s,i){
     html+='<div class="stop-card"><div class="stop-row">'+
@@ -782,11 +863,15 @@ function renderStops(){
         '<div class="stop-name">'+esc(s.name)+'</div>'+
         '<div class="stop-meta-text">'+esc(s.address)+'</div>'+
       '</div>'+
-      '<button class="stop-del" onclick="delStop('+s.id+')">×</button>'+
+      '<div class="stop-actions">'+
+        '<button class="stop-edit" onclick="openStopForm(\''+s.id+'\',false)" title="Edit">✏️</button>'+
+        '<button class="stop-del" onclick="delStop(\''+s.id+'\')">×</button>'+
+      '</div>'+
       '</div><div class="stop-details">'+
       (s.visitType?'<span class="visit-type-badge">'+esc(s.visitType)+'</span>':'')+
       (s.mid?'<span class="mid-badge">MID: '+esc(s.mid)+'</span>':'')+
-      '<div class="dur-wrap"><input type="number" min="1" max="300" value="'+(s.dur||15)+'" onchange="setDur('+s.id+',this.value)"/><span>min visit duration</span></div>'+
+      (s.isOnboarding?'<span class="approx-badge">📍 Approx location</span>':'')+
+      '<div class="dur-wrap"><input type="number" min="1" max="300" value="'+(s.dur||15)+'" onchange="setDur(\''+s.id+'\',this.value)"/><span>min visit duration</span></div>'+
       (s.from?'<div style="font-size:11px;color:#7c3aed;margin-top:2px;">⏰ Window: '+s.from+' – '+s.to+'</div>':'')+
       '</div></div>';
   });
@@ -806,7 +891,7 @@ function redrawMarkers(){
     m.addListener('click',function(){iw.open(gmap,m);});markersArr.push(m);bounds.extend({lat:obj.lat,lng:obj.lon});any=true;
   }
   if(startPlace)mk(startPlace,'S','#22c55e');
-  stops.forEach(function(s,i){mk(s,String(i+1),'#5f259f');});
+  stops.forEach(function(s,i){mk(s,String(i+1),s.done?'#16a34a':'#5f259f');});
   if(endPlace)mk(endPlace,'E','#ef4444');
   if(any){if(markersArr.length===1){gmap.setCenter({lat:markersArr[0].getPosition().lat(),lng:markersArr[0].getPosition().lng()});gmap.setZoom(15);}else gmap.fitBounds(bounds,50);}
 }
@@ -825,10 +910,7 @@ function getRoadDistance(from,to){
         var leg=result.routes[0].legs[0];
         var data={km:leg.distance.value/1000,min:leg.duration.value/60};
         distCache[key]=data;resolve(data);
-      }else{
-        var km=haversine(from,to)*1.35;
-        resolve({km:km,min:km/0.3});
-      }
+      }else{var km=haversine(from,to)*1.35;resolve({km:km,min:km/0.3});}
     });
   });
 }
@@ -841,8 +923,7 @@ async function buildDistanceMatrix(points){
       if(i!==j){
         (function(ii,jj){
           promises.push(getRoadDistance(points[ii],points[jj]).then(function(d){
-            if(!matrix[ii])matrix[ii]={};
-            matrix[ii][jj]=d;
+            if(!matrix[ii])matrix[ii]={};matrix[ii][jj]=d;
           }));
         })(i,j);
       }
@@ -858,6 +939,8 @@ function haversine(a,b){
   return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
 
+function distMetres(a,b){return haversine(a,b)*1000;}
+
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function toMin(t){if(!t)return null;var p=t.split(':');return +p[0]*60+ +p[1];}
 function fmtMin(m){m=Math.round(m);if(m<=0)return'0m';var h=Math.floor(m/60),mn=m%60;return h>0?(mn>0?h+'h '+mn+'m':h+'h'):mn+'m';}
@@ -870,14 +953,20 @@ function breakWaitAt(now){
   breaks.forEach(function(b){var bs=toMin(b.time),be=bs+(b.dur||30);if(now>=bs&&now<be)wait=Math.max(wait,be-now);});
   return wait;
 }
+// Effective duration including onboarding buffer
+function effectiveDur(s){return (s.dur||15)+(s.isOnboarding?ONBOARDING_BUFFER:0);}
 
-// ── OPTIMIZE ──────────────────────────────────────────────────────────────────
-async function optimize(){
+// ── OPTIMIZE (full or remaining) ──────────────────────────────────────────────
+async function optimize(remainingOnly, fromStop, startTime){
   if(!startPlace||stops.length<1){showMsg('Pin a start location first');return;}
-  reoptCount++;showLoading(true);
+  reoptCount++;
+  showLoading(true, remainingOnly?'Re-optimizing remaining stops…':'Calculating real road distances…');
   try{
-    var dayStart=getDayStart();
-    var allPoints=[startPlace].concat(stops);
+    var dayStart=remainingOnly?startTime:getDayStart();
+    var pendingStops=remainingOnly?stops.filter(function(s){return!s.done;}):stops;
+    var curStart=remainingOnly?fromStop:startPlace;
+
+    var allPoints=[curStart].concat(pendingStops);
     if(endPlace)allPoints.push(endPlace);
     var matrix=await buildDistanceMatrix(allPoints);
 
@@ -887,9 +976,9 @@ async function optimize(){
       var km=haversine(from,to)*1.35;return{km:km,min:km/0.3};
     }
 
-    var free=stops.filter(function(s){return!s.from;}),
-        timed=stops.filter(function(s){return s.from;}).sort(function(a,b){return toMin(a.from)-toMin(b.from);});
-    var route=[],remaining=free.slice(),now=dayStart,cur=startPlace,g=0;
+    var free=pendingStops.filter(function(s){return!s.from;}),
+        timed=pendingStops.filter(function(s){return s.from;}).sort(function(a,b){return toMin(a.from)-toMin(b.from);});
+    var route=[],remaining=free.slice(),now=dayStart,cur=curStart,g=0;
 
     while((remaining.length||timed.length)&&g++<500){
       var urgent=null;
@@ -898,36 +987,51 @@ async function optimize(){
         var dd=getD(cur,urgent);now+=dd.min;
         var bw=breakWaitAt(now);now+=bw;
         if(now<toMin(urgent.from)){urgent.idleBefore=toMin(urgent.from)-now+bw;now=toMin(urgent.from);}else{urgent.idleBefore=bw;}
-        urgent.arrivalTime=now;urgent.departTime=now+(urgent.dur||15);urgent.travelledKm=dd.km;urgent.travelledMin=dd.min;
+        urgent.arrivalTime=now;urgent.departTime=now+effectiveDur(urgent);urgent.travelledKm=dd.km;urgent.travelledMin=dd.min;
         now=urgent.departTime;cur=urgent;route.push(urgent);timed.splice(timed.indexOf(urgent),1);
       }else if(remaining.length){
         var best=remaining[0],bd=getD(cur,remaining[0]);
         remaining.forEach(function(s){var d2=getD(cur,s);if(d2.min<bd.min){best=s;bd=d2;}});
         now+=bd.min;var bw2=breakWaitAt(now);now+=bw2;
-        best.idleBefore=bw2;best.arrivalTime=now;best.departTime=now+(best.dur||15);best.travelledKm=bd.km;best.travelledMin=bd.min;
+        best.idleBefore=bw2;best.arrivalTime=now;best.departTime=now+effectiveDur(best);best.travelledKm=bd.km;best.travelledMin=bd.min;
         now=best.departTime;cur=best;route.push(best);remaining.splice(remaining.indexOf(best),1);
       }else{
         var nx=timed.shift(),dn=getD(cur,nx);now+=dn.min;var bw3=breakWaitAt(now);now+=bw3;
         if(now<toMin(nx.from)){nx.idleBefore=toMin(nx.from)-now+bw3;now=toMin(nx.from);}else{nx.idleBefore=bw3;}
-        nx.arrivalTime=now;nx.departTime=now+(nx.dur||15);nx.travelledKm=dn.km;nx.travelledMin=dn.min;
+        nx.arrivalTime=now;nx.departTime=now+effectiveDur(nx);nx.travelledKm=dn.km;nx.travelledMin=dn.min;
         now=nx.departTime;cur=nx;route.push(nx);
       }
     }
 
-    var allN=[];if(startPlace)allN.push(startPlace);route.forEach(function(s){allN.push(s);});if(endPlace)allN.push(endPlace);
-    for(var j=0;j<allN.length-1;j++){
-      var dn2=getD(allN[j],allN[j+1]);
-      allN[j].travelToNext=dn2.min;allN[j].kmToNext=dn2.km;
-      allN[j].totalGapToNext=dn2.min+(allN[j+1].idleBefore||0);
+    for(var j=0;j<route.length-1;j++){
+      var dn2=getD(route[j],route[j+1]);
+      route[j].travelToNext=dn2.min;route[j].kmToNext=dn2.km;
+      route[j].totalGapToNext=dn2.min+(route[j+1].idleBefore||0);
+    }
+    if(endPlace&&route.length>0){
+      var dl=getD(route[route.length-1],endPlace);
+      route[route.length-1].travelToNext=dl.min;route[route.length-1].kmToNext=dl.km;
+      route[route.length-1].totalGapToNext=dl.min;
     }
 
-    var naiveStats=await calcUnoptimisedReal(matrix,allPoints,dayStart);
-    optimized=route;optimized._naiveStats=naiveStats;optimized._matrix=matrix;optimized._allPoints=allPoints;
+    var naiveStats=null;
+    if(!remainingOnly)naiveStats=await calcUnoptimisedReal(matrix,allPoints,dayStart);
+
+    // Merge done stops back at the front if re-optimizing remaining
+    if(remainingOnly){
+      var doneStops=optimized.filter(function(s){return s.done;});
+      optimized=doneStops.concat(route);
+    } else {
+      optimized=route;
+    }
+    if(naiveStats)optimized._naiveStats=naiveStats;
+    else if(!optimized._naiveStats)optimized._naiveStats={km:0,travMin:0,visitMin:0,idleMin:0,totalMin:0};
+    optimized._matrix=matrix;optimized._allPoints=allPoints;
 
     saveToStorage();showLoading(false);
-    renderRoute();drawOptimized();goTab('route');
-    syncToSheets();
-    showMsg('✓ Optimized — '+route.length+' stops!');
+    renderRoute();drawOptimized();
+    if(!remainingOnly){goTab('route');syncToSheets();}
+    showMsg(remainingOnly?'✓ Remaining stops re-optimized':'✓ Optimized — '+route.length+' stops!');
   }catch(err){showLoading(false);showMsg('Error. Please try again.');console.error(err);}
 }
 
@@ -952,19 +1056,105 @@ function calcSingleRoute(orderedStops,matrix,allPoints,dayStart){
   var all=[];if(startPlace)all.push(startPlace);orderedStops.forEach(function(s){all.push(s);});if(endPlace)all.push(endPlace);
   var km=0,travMin=0;
   for(var i=0;i<all.length-1;i++){var d=getD(all[i],all[i+1]);km+=d.km;travMin+=d.min;}
-  var visitMin=orderedStops.reduce(function(s,x){return s+(x.dur||15);},0);
+  var visitMin=orderedStops.reduce(function(s,x){return s+effectiveDur(x);},0);
   var now=dayStart||getDayStart(),idleMin=0,cur=startPlace||orderedStops[0];
   orderedStops.forEach(function(s){
     var d=getD(cur,s);now+=d.min;
     var bw=breakWaitAt(now);idleMin+=bw;now+=bw;
     if(s.from){var tw=toMin(s.from);if(now<tw){idleMin+=(tw-now);now=tw;}}
-    now+=(s.dur||15);cur=s;
+    now+=effectiveDur(s);cur=s;
   });
   var brkTotal=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
   return{km:km,travMin:travMin,visitMin:visitMin,idleMin:idleMin,breakMin:brkTotal,totalMin:travMin+visitMin+idleMin+brkTotal};
 }
 
-function showLoading(show){document.getElementById('loading-overlay').classList.toggle('show',show);}
+function showLoading(show,msg){
+  document.getElementById('loading-overlay').classList.toggle('show',show);
+  if(msg)document.getElementById('loading-text').textContent=msg;
+}
+
+// ── DONE VISIT (Change 1 & 2) ─────────────────────────────────────────────────
+function markDone(stopId){
+  var s=optimized.find(function(x){return x.id==stopId;});
+  if(!s)return;
+  _doneStopId=stopId;
+  document.getElementById('done-modal-title').textContent='✓ Done at '+esc(s.name);
+  document.getElementById('done-dur-input').value=s.dur||15;
+  document.getElementById('done-modal').classList.add('show');
+}
+
+function closeDoneModal(){document.getElementById('done-modal').classList.remove('show');_doneStopId=null;}
+
+function confirmDone(){
+  var s=optimized.find(function(x){return x.id==_doneStopId;});
+  if(!s){closeDoneModal();return;}
+  var actualDur=parseInt(document.getElementById('done-dur-input').value)||s.dur||15;
+  s.actualDur=actualDur;
+  s.done=true;
+  // Update in stops array too
+  var orig=stops.find(function(x){return x.id==s.id;});
+  if(orig){orig.done=true;orig.actualDur=actualDur;}
+  closeDoneModal();
+
+  // Change 2: Get agent's current GPS location for verification
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      function(pos){
+        var agentLat=pos.coords.latitude,agentLon=pos.coords.longitude;
+        var metres=Math.round(distMetres({lat:agentLat,lon:agentLon},{lat:s.lat,lon:s.lon}));
+        s.actualLat=agentLat;s.actualLon=agentLon;s.distanceFromStop=metres;
+        if(metres<=200){s.verificationStatus='Verified';}
+        else if(metres<=500){s.verificationStatus='Nearby';}
+        else{s.verificationStatus='Not Verified';}
+        if(orig){orig.actualLat=agentLat;orig.actualLon=agentLon;orig.distanceFromStop=metres;orig.verificationStatus=s.verificationStatus;}
+        saveToStorage();renderRoute();
+        syncStopVerification(s);
+        showMsg(s.verificationStatus==='Verified'?'✅ Visit verified':'⚠️ Location check: '+s.verificationStatus);
+        reOptimizeRemaining(s);
+      },
+      function(){
+        s.verificationStatus='GPS Unavailable';
+        saveToStorage();renderRoute();
+        reOptimizeRemaining(s);
+      },
+      {enableHighAccuracy:true,timeout:8000,maximumAge:0}
+    );
+  } else {
+    s.verificationStatus='GPS Unavailable';
+    saveToStorage();renderRoute();
+    reOptimizeRemaining(s);
+  }
+}
+
+function reOptimizeRemaining(completedStop){
+  var remaining=optimized.filter(function(s){return!s.done;});
+  if(!remaining.length){saveToStorage();renderRoute();return;}
+  // Current time = now (minutes from midnight)
+  var now=new Date();
+  var nowMin=now.getHours()*60+now.getMinutes();
+  optimize(true, completedStop, nowMin);
+}
+
+// Send verification data to sheets
+function syncStopVerification(s){
+  var today=new Date();
+  var dateStr=today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+  var timeStr=today.getHours()+':'+(today.getMinutes()<10?'0':'')+today.getMinutes();
+  fetch(SHEETS_URL,{
+    method:'POST',mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      sheet:'verification',
+      agent_name:getAgentName(),date:dateStr,time:timeStr,
+      shop_name:s.name,mid:s.mid||'',visit_type:s.visitType||'',
+      planned_lat:s.lat,planned_lon:s.lon,
+      actual_lat:s.actualLat||'',actual_lon:s.actualLon||'',
+      distance_from_stop_metres:s.distanceFromStop||'',
+      verification_status:s.verificationStatus||'',
+      planned_duration:s.dur,actual_duration:s.actualDur
+    })
+  }).catch(function(){});
+}
 
 // ── RENDER ROUTE ──────────────────────────────────────────────────────────────
 function renderRoute(){
@@ -976,56 +1166,52 @@ function renderRoute(){
   if(endPlace&&optimized.length>0)optKm+=(optimized[optimized.length-1].kmToNext||0);
   var optTravMin=optimized.reduce(function(s,x){return s+(x.travelledMin||0);},0);
   if(endPlace&&optimized.length>0)optTravMin+=(optimized[optimized.length-1].travelToNext||0);
-  var optVisitMin=optimized.reduce(function(s,x){return s+(x.dur||15);},0);
+  var optVisitMin=optimized.reduce(function(s,x){return s+(x.actualDur||x.dur||15);},0);
   var optIdleMin=optimized.reduce(function(s,x){return s+(x.idleBefore||0);},0);
   var brkMin=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
   var optTotalMin=optTravMin+optVisitMin+optIdleMin+brkMin;
-
   var optProductivePct=workingMin>0?Math.round(optVisitMin/workingMin*100):0;
-  var naiveProductivePct=workingMin>0&&naive.totalMin>0?Math.round(naive.visitMin/Math.max(naive.totalMin,workingMin)*100):0;
-
+  var naiveProductivePct=workingMin>0&&naive.totalMin>0?Math.round((naive.visitMin||0)/Math.max(naive.totalMin,workingMin)*100):0;
   var savedKm=Math.max(0,naive.km-optKm);
   var savedTrav=Math.max(0,naive.travMin-optTravMin);
   var savedTotal=Math.max(0,naive.totalMin-optTotalMin);
   var fuelSaved=savedKm*FUEL_RATE;
   var maxKm=Math.max(naive.km,optKm,0.1);
   var maxTrav=Math.max(naive.travMin,optTravMin,0.1);
-
   var twMet=optimized.filter(function(s){return s.from&&s.arrivalTime&&s.arrivalTime<=toMin(s.to);}).length;
   var twTotal=optimized.filter(function(s){return s.from;}).length;
+  var doneCount=optimized.filter(function(s){return s.done;}).length;
 
   var breaches=[];
   optimized.forEach(function(s){
-    if(s.from&&s.arrivalTime&&s.arrivalTime>toMin(s.to))
+    if(!s.done&&s.from&&s.arrivalTime&&s.arrivalTime>toMin(s.to))
       breaches.push({name:s.name,arrived:fmtTime(s.arrivalTime),closesAt:s.to});
   });
 
   var html='';
-
   if(breaches.length){
     html+='<div class="breach-banner"><div class="breach-title">⚠️ '+breaches.length+' stop'+(breaches.length>1?'s':'')+' cannot be reached on time</div>';
     breaches.forEach(function(b){
-      html+='<div class="breach-item"><span>❌</span><span><b>'+esc(b.name)+'</b> — you will arrive at '+b.arrived+' but window closes at '+b.closesAt+'. Consider rescheduling.</span></div>';
+      html+='<div class="breach-item"><span>❌</span><span><b>'+esc(b.name)+'</b> — arrive at '+b.arrived+' but window closes at '+b.closesAt+'. Consider rescheduling.</span></div>';
     });
     html+='</div>';
   }
 
-  // Overrun tip
-  html+='<div class="overrun-tip">💡 <b>Spent longer at a stop?</b> Update its duration below and tap Optimize again to fix your remaining schedule.</div>';
+  html+='<div class="overrun-tip">💡 <b>Spent longer at a stop?</b> Tap ✓ Done with the actual time spent — remaining stops will auto re-optimize.</div>';
 
   html+='<div class="route-hero">'+
     '<div class="rh-title">✨ Optimized Route</div>'+
-    '<div class="rh-sub">'+optimized.length+' stops · from '+esc(startPlace.name)+' · starts '+fmtTime(dayStart)+'</div>'+
+    '<div class="rh-sub">'+optimized.length+' stops · '+doneCount+' done · from '+esc(startPlace.name)+'</div>'+
     '<div class="rstats">'+
-      '<div class="rstat"><div class="rstat-v">'+optimized.length+'</div><div class="rstat-l">Stops</div></div>'+
+      '<div class="rstat"><div class="rstat-v">'+optimized.length+'</div><div class="rstat-l">Total</div></div>'+
+      '<div class="rstat"><div class="rstat-v">'+doneCount+'</div><div class="rstat-l">Done ✓</div></div>'+
       '<div class="rstat"><div class="rstat-v">'+optKm.toFixed(1)+' km</div><div class="rstat-l">Distance</div></div>'+
       '<div class="rstat"><div class="rstat-v">'+fmtMin(optTravMin)+'</div><div class="rstat-l">Travel</div></div>'+
-      '<div class="rstat"><div class="rstat-v">'+fmtMin(optVisitMin)+'</div><div class="rstat-l">Visit time</div></div>'+
       '<div class="rstat"><div class="rstat-v">'+fmtMin(optTotalMin)+'</div><div class="rstat-l">Total</div></div>'+
     '</div></div>';
 
   html+='<div class="impact-card"><div class="impact-title">📊 RouteWise Impact</div>'+
-    '<div class="cmp-section"><div class="cmp-section-title">📏 Distance (actual road distance)</div>'+
+    '<div class="cmp-section"><div class="cmp-section-title">📏 Distance (actual road)</div>'+
     '<div class="cmp-bar-row"><div class="cmp-bar-label" style="color:#ef4444">❌ Without</div><div class="cmp-bar-wrap"><div class="cmp-bar" style="width:100%;background:#ef4444"></div></div><div class="cmp-val" style="color:#ef4444">'+naive.km.toFixed(1)+' km</div></div>'+
     '<div class="cmp-bar-row"><div class="cmp-bar-label" style="color:#5f259f">✅ Optimized</div><div class="cmp-bar-wrap"><div class="cmp-bar" style="width:'+Math.round(optKm/maxKm*100)+'%;background:#5f259f"></div></div><div class="cmp-val" style="color:#5f259f">'+optKm.toFixed(1)+' km</div></div></div>'+
     '<div class="cmp-section"><div class="cmp-section-title">🚗 Travel time</div>'+
@@ -1035,35 +1221,32 @@ function renderRoute(){
       '<div class="saving-row"><span class="saving-label">📏 Distance saved</span><span class="saving-val">'+savedKm.toFixed(1)+' km</span></div>'+
       '<div class="saving-row"><span class="saving-label">🚗 Travel time saved</span><span class="saving-val">'+fmtMin(savedTrav)+'</span></div>'+
       '<div class="saving-row"><span class="saving-label">⏱ Total time saved</span><span class="saving-val">'+fmtMin(savedTotal)+'</span></div>'+
-      '<div class="saving-row"><span class="saving-label">⛽ Fuel cost saved</span><span class="saving-val">₹'+fuelSaved.toFixed(0)+'</span></div>'+
+      '<div class="saving-row"><span class="saving-label">⛽ Fuel saved</span><span class="saving-val">₹'+fuelSaved.toFixed(0)+'</span></div>'+
     '</div>'+
     '<div class="expandable-section">'+
       '<button class="expand-toggle" onclick="toggleExpand(this)">ℹ️ How is this calculated? ▾</button>'+
-      '<div class="expand-body">The "Without RouteWise" numbers are calculated by simulating 50 different random orderings of your stops and averaging the results. This represents what a typical unplanned day looks like. All distances and times use the Google Maps Directions API — the same data Google Maps shows you. Fuel cost is estimated at ₹6 per km for a two-wheeler.</div>'+
+      '<div class="expand-body">Without RouteWise numbers are calculated by simulating 50 random orderings of your stops and averaging results. All distances and times use Google Maps Directions API. Fuel cost estimated at ₹6/km for two-wheeler.</div>'+
     '</div></div>';
 
   html+='<div class="productive-card">'+
     '<div class="productive-title">⚡ Productive Time Ratio</div>'+
-    '<div class="productive-sub">% of your working day actually spent with merchants vs travelling</div>'+
+    '<div class="productive-sub">% of working day spent with merchants vs travelling</div>'+
     '<div class="productive-compare">'+
-      '<div class="productive-box without"><div class="productive-box-label">❌ Without RouteWise</div><div class="productive-box-val">'+naiveProductivePct+'%</div><div class="productive-box-sub">productive<br>'+fmtMin(naive.visitMin)+' visiting<br>'+fmtMin(naive.travMin)+' travelling</div></div>'+
-      '<div class="productive-box with"><div class="productive-box-label">✅ With RouteWise</div><div class="productive-box-val">'+optProductivePct+'%</div><div class="productive-box-sub">productive<br>'+fmtMin(optVisitMin)+' visiting<br>'+fmtMin(optTravMin)+' travelling</div></div>'+
+      '<div class="productive-box without"><div class="productive-box-label">❌ Without</div><div class="productive-box-val">'+naiveProductivePct+'%</div><div class="productive-box-sub">'+fmtMin(naive.visitMin)+' visiting<br>'+fmtMin(naive.travMin)+' travelling</div></div>'+
+      '<div class="productive-box with"><div class="productive-box-label">✅ RouteWise</div><div class="productive-box-val">'+optProductivePct+'%</div><div class="productive-box-sub">'+fmtMin(optVisitMin)+' visiting<br>'+fmtMin(optTravMin)+' travelling</div></div>'+
     '</div>'+
     '<div class="productive-breakdown">'+
-      '<div class="pb-row"><span class="pb-label">Working hours ('+fmtTime(dayStart)+' – '+fmtTime(dayEnd)+')</span><span class="pb-val">'+fmtMin(workingMin)+'</span></div>'+
-      '<div class="pb-row"><span class="pb-label">Total visit time ('+optimized.length+' stops)</span><span class="pb-val">'+fmtMin(optVisitMin)+'</span></div>'+
-      '<div class="pb-row"><span class="pb-label">Total travel time</span><span class="pb-val">'+fmtMin(optTravMin)+'</span></div>'+
-      (brkMin>0?'<div class="pb-row"><span class="pb-label">Break time</span><span class="pb-val">'+fmtMin(brkMin)+'</span></div>':'')+
+      '<div class="pb-row"><span class="pb-label">Working hours</span><span class="pb-val">'+fmtMin(workingMin)+'</span></div>'+
       '<div class="pb-row"><span class="pb-label">Productive ratio improvement</span><span class="pb-val" style="color:#16a34a">+'+Math.max(0,optProductivePct-naiveProductivePct)+'%</span></div>'+
     '</div></div>';
 
   if(hasTimeWindows()){
     html+='<div class="idle-card">'+
       '<div class="idle-card-header"><span class="idle-card-title">💤 Idle / Waiting Time</span>'+
-      '<button class="idle-i-btn" onclick="toggleExpandById(\'idle-explain\')">ℹ️ How calculated?</button></div>'+
-      '<div class="idle-explain" id="idle-explain">Idle time happens when a stop has a time window and the agent arrives early. Without RouteWise, random ordering can send agents to time-windowed stops hours early. We simulate 50 random orderings using actual Google Maps times to calculate the average idle time. RouteWise minimises this by sequencing stops to arrive close to when windows open.</div>'+
+      '<button class="idle-i-btn" onclick="toggleExpandById(\'idle-exp\')">ℹ️</button></div>'+
+      '<div class="idle-explain" id="idle-exp">Idle time occurs when a stop has a time window and the agent arrives early. Without RouteWise, random ordering can send agents hours too early. We simulate 50 random orderings using Google Maps road times to calculate average idle time.</div>'+
       '<div class="idle-compare">'+
-        '<div class="idle-box bad"><div class="idle-box-label">❌ Without</div><div class="idle-box-val">'+fmtMin(naive.idleMin)+'</div><div class="idle-box-sub">avg wasted waiting</div></div>'+
+        '<div class="idle-box bad"><div class="idle-box-label">❌ Without</div><div class="idle-box-val">'+fmtMin(naive.idleMin)+'</div><div class="idle-box-sub">avg wasted</div></div>'+
         '<div class="idle-box good"><div class="idle-box-label">✅ Optimized</div><div class="idle-box-val">'+fmtMin(optIdleMin)+'</div><div class="idle-box-sub">idle time</div></div>'+
       '</div></div>';
   }
@@ -1092,55 +1275,68 @@ function renderRoute(){
       html+='<div class="rstop"><div class="rstop-left"><div class="rstop-dot bdot">☕</div>'+(!isLast?'<div class="rstop-line"></div>':'')+' </div>'+
         '<div class="rstop-body break-body"><div class="rstop-name">'+esc(b.name)+'</div>'+
         '<div class="time-breakdown">'+
-          '<div class="tb-row"><div class="tb-icon">🕐</div><div class="tb-label">Starts at</div><div class="tb-val tb-arrive">'+fmtTime(toMin(b.time))+'</div></div>'+
+          '<div class="tb-row"><div class="tb-icon">🕐</div><div class="tb-label">Starts</div><div class="tb-val tb-arrive">'+fmtTime(toMin(b.time))+'</div></div>'+
           '<div class="tb-row"><div class="tb-icon">⏱</div><div class="tb-label">Duration</div><div class="tb-val tb-stay">'+b.dur+' min</div></div>'+
-          '<div class="tb-row"><div class="tb-icon">🔴</div><div class="tb-label">Ends at</div><div class="tb-val tb-depart">'+fmtTime(toMin(b.time)+b.dur)+'</div></div>'+
+          '<div class="tb-row"><div class="tb-icon">🔴</div><div class="tb-label">Ends</div><div class="tb-val tb-depart">'+fmtTime(toMin(b.time)+b.dur)+'</div></div>'+
         '</div></div></div><div class="spacer"></div>';
       return;
     }
 
     var s=node.s;
-    var dc=node.type==='start'?'sdot':node.type==='end'?'edot':'pdot';
-    var label=node.type==='start'?'S':node.type==='end'?'E':String(node.idx+1);
-    var isBreach=node.type==='stop'&&s.from&&s.arrivalTime&&s.arrivalTime>toMin(s.to);
+    var isDone=s.done===true;
+    var dc=node.type==='start'?'sdot':node.type==='end'?'edot':isDone?'done':'pdot';
+    var label=node.type==='start'?'S':node.type==='end'?'E':(isDone?'✓':String(node.idx+1));
+    var isBreach=node.type==='stop'&&!isDone&&s.from&&s.arrivalTime&&s.arrivalTime>toMin(s.to);
+    var lineClass=isDone?'rstop-line done-line':'rstop-line';
+    var cardClass='rstop-body'+(isDone?' done-card':isBreach?' breach':'');
 
-    if(node.type==='stop'&&s.idleBefore&&s.idleBefore>1){
+    if(node.type==='stop'&&s.idleBefore&&s.idleBefore>1&&!isDone){
       html+='<div class="idle-segment"><div class="idle-seg-left"><div class="idle-seg-dot">⏳</div><div class="idle-seg-line"></div></div>'+
         '<div class="idle-seg-body"><div class="idle-seg-title">Waiting — '+fmtMin(s.idleBefore)+'</div>'+
-        '<div class="idle-seg-sub">'+(s.from?'Time window opens at '+s.from:'Break in progress')+'</div></div></div><div class="spacer"></div>';
+        '<div class="idle-seg-sub">'+(s.from?'Window opens at '+s.from:'Break in progress')+'</div></div></div><div class="spacer"></div>';
     }
 
-    html+='<div class="rstop"><div class="rstop-left"><div class="rstop-dot '+dc+(isBreach?' wdot':'')+'">'+label+'</div>'+(!isLast?'<div class="rstop-line"></div>':'')+' </div>'+
-      '<div class="rstop-body'+(isBreach?' breach':'')+'">'+
-        '<div class="rstop-name">'+esc(s.name)+'</div>'+
-        '<div class="rstop-addr">'+esc(s.address)+'</div>';
+    html+='<div class="rstop"><div class="rstop-left"><div class="rstop-dot '+dc+'">'+label+'</div>'+(!isLast?'<div class="'+lineClass+'"></div>':'')+' </div>'+
+      '<div class="'+cardClass+'"><div class="rstop-name">'+esc(s.name)+'</div><div class="rstop-addr">'+esc(s.address)+'</div>';
 
     if(node.type==='stop'){
-      // Badges
       html+='<div class="rstop-badges">';
       if(s.visitType)html+='<span class="rbadge rbadge-type">'+esc(s.visitType)+'</span>';
       if(s.mid)html+='<span class="rbadge rbadge-mid">MID: '+esc(s.mid)+'</span>';
+      if(s.isOnboarding)html+='<span class="rbadge rbadge-approx">📍 Approx</span>';
+      // Verification badge
+      if(s.verificationStatus==='Verified')html+='<span class="rbadge rbadge-verified">✅ Verified</span>';
+      else if(s.verificationStatus==='Nearby')html+='<span class="rbadge rbadge-nearby">🟡 Nearby ('+s.distanceFromStop+'m)</span>';
+      else if(s.verificationStatus==='Not Verified')html+='<span class="rbadge rbadge-unverified">🔴 Not verified ('+s.distanceFromStop+'m away)</span>';
       html+='</div>';
-      if(isBreach)html+='<div class="breach-tag">⚠️ Missed — arrived '+fmtTime(s.arrivalTime)+', window closed at '+s.to+'</div>';
 
-      html+='<div class="time-breakdown">'+
-        (s.arrivalTime?'<div class="tb-row"><div class="tb-icon">🟢</div><div class="tb-label">Arrive at</div><div class="tb-val tb-arrive">'+fmtTime(s.arrivalTime)+'</div></div>':'')+
-        // Inline duration edit
-        '<div class="tb-row"><div class="tb-icon">⏱</div><div class="tb-label">Time at stop</div>'+
-        '<div class="inline-dur"><input type="number" min="1" max="300" value="'+(s.dur||15)+'" onchange="setDur('+s.id+',this.value)" title="Edit duration"/><span>min</span></div></div>'+
-        (s.departTime?'<div class="tb-row"><div class="tb-icon">🔴</div><div class="tb-label">Depart at</div><div class="tb-val tb-depart">'+fmtTime(s.departTime)+'</div></div>':'')+
-        (s.travelToNext?'<div class="tb-row"><div class="tb-icon">🚗</div><div class="tb-label">Drive to next</div><div class="tb-val tb-travel">'+fmtMin(s.travelToNext)+' · '+s.kmToNext.toFixed(1)+' km</div></div>':'')+
-        (s.from?'<div class="tb-row"><div class="tb-icon">⏰</div><div class="tb-label">Time window</div><div class="tb-val">'+s.from+' – '+s.to+'</div></div>':'')+
-      '</div>'+
-      '<button class="nav-btn" onclick="navTo('+s.lat+','+s.lon+')">🗺 Open in Google Maps</button>';
+      if(isBreach)html+='<div class="breach-tag">⚠️ Missed — arrive '+fmtTime(s.arrivalTime)+', closes '+s.to+'</div>';
+
+      if(isDone){
+        html+='<div class="done-info">'+
+          '✅ Completed — spent '+(s.actualDur||s.dur)+' min'+(s.actualDur&&s.actualDur!==s.dur?' (planned: '+s.dur+' min)':'')+
+        '</div>';
+      } else {
+        html+='<div class="time-breakdown">'+
+          (s.arrivalTime?'<div class="tb-row"><div class="tb-icon">🟢</div><div class="tb-label">Arrive at</div><div class="tb-val tb-arrive">'+fmtTime(s.arrivalTime)+'</div></div>':'')+
+          '<div class="tb-row"><div class="tb-icon">⏱</div><div class="tb-label">Time at stop</div>'+
+          '<div class="inline-dur"><input type="number" min="1" max="300" value="'+(s.dur||15)+'" onchange="setDur(\''+s.id+'\',this.value)"/><span>min</span></div></div>'+
+          (s.isOnboarding?'<div class="tb-row"><div class="tb-icon">📍</div><div class="tb-label">Onboarding buffer</div><div class="tb-val">+'+ONBOARDING_BUFFER+' min</div></div>':'')+
+          (s.departTime?'<div class="tb-row"><div class="tb-icon">🔴</div><div class="tb-label">Depart at</div><div class="tb-val tb-depart">'+fmtTime(s.departTime)+'</div></div>':'')+
+          (s.travelToNext?'<div class="tb-row"><div class="tb-icon">🚗</div><div class="tb-label">Drive to next</div><div class="tb-val tb-travel">'+fmtMin(s.travelToNext)+' · '+s.kmToNext.toFixed(1)+' km</div></div>':'')+
+          (s.from?'<div class="tb-row"><div class="tb-icon">⏰</div><div class="tb-label">Time window</div><div class="tb-val">'+s.from+' – '+s.to+'</div></div>':'')+
+        '</div>'+
+        '<button class="done-btn" onclick="markDone(\''+s.id+'\')">✓ Mark as Done</button>'+
+        '<button class="nav-btn" onclick="navTo('+s.lat+','+s.lon+')">🗺 Open in Google Maps</button>';
+      }
     }
     html+='</div></div>';
 
-    if(node.type==='stop'&&!isLast&&s.totalGapToNext&&s.totalGapToNext>30){
+    if(node.type==='stop'&&!isDone&&!isLast&&s.totalGapToNext&&s.totalGapToNext>30){
       var hasIdle=(s.totalGapToNext-(s.travelToNext||0))>1;
       html+='<div class="gap-nudge"><div class="gap-nudge-left"><div class="gap-nudge-line"></div></div>'+
-        '<div class="gap-nudge-body"><div class="gap-nudge-title">💡 '+fmtMin(s.totalGapToNext)+' free time in this gap</div>'+
-        '<div class="gap-nudge-sub">'+(hasIdle?'Includes travel and waiting for next time window. ':'')+'You could fit another merchant visit here.</div>'+
+        '<div class="gap-nudge-body"><div class="gap-nudge-title">💡 '+fmtMin(s.totalGapToNext)+' free time here</div>'+
+        '<div class="gap-nudge-sub">'+(hasIdle?'Includes travel and waiting time. ':'')+'You could fit another merchant visit.</div>'+
         '<button class="gap-nudge-btn" onclick="addStopFromGap()">+ Add a stop here</button>'+
         '</div></div>';
     }
@@ -1151,12 +1347,11 @@ function renderRoute(){
   el.innerHTML=html;
 }
 
-// ── SYNC TO SHEETS (two sheets) ───────────────────────────────────────────────
+// ── SYNC TO SHEETS ────────────────────────────────────────────────────────────
 function syncToSheets(){
   if(!optimized.length)return;
   var naive=optimized._naiveStats||{km:0,travMin:0,visitMin:0,idleMin:0,totalMin:0};
   var dayStart=getDayStart(),dayEnd=getDayEnd(),workingMin=dayEnd-dayStart;
-
   var optKm=optimized.reduce(function(s,x){return s+(x.travelledKm||0);},0);
   if(endPlace&&optimized.length>0)optKm+=(optimized[optimized.length-1].kmToNext||0);
   var optTravMin=optimized.reduce(function(s,x){return s+(x.travelledMin||0);},0);
@@ -1165,68 +1360,49 @@ function syncToSheets(){
   var optIdleMin=optimized.reduce(function(s,x){return s+(x.idleBefore||0);},0);
   var brkMin=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
   var optTotalMin=optTravMin+optVisitMin+optIdleMin+brkMin;
-  var optProductivePct=workingMin>0?Math.round(optVisitMin/workingMin*100):0;
-  var naiveProductivePct=workingMin>0?Math.round((naive.visitMin||0)/Math.max(naive.totalMin||1,workingMin)*100):0;
+  var optProd=workingMin>0?Math.round(optVisitMin/workingMin*100):0;
+  var naiveProd=workingMin>0?Math.round((naive.visitMin||0)/Math.max(naive.totalMin||1,workingMin)*100):0;
   var savedKm=Math.max(0,naive.km-optKm);
   var savedTrav=Math.max(0,naive.travMin-optTravMin);
   var savedTotal=Math.max(0,naive.totalMin-optTotalMin);
   var fuelSaved=savedKm*FUEL_RATE;
   var twMet=optimized.filter(function(s){return s.from&&s.arrivalTime&&s.arrivalTime<=toMin(s.to);}).length;
   var twTotal=optimized.filter(function(s){return s.from;}).length;
-  var twMissed=twTotal-twMet;
-  var twCompliance=twTotal>0?Math.round(twMet/twTotal*100):null;
-
   var today=new Date();
   var dateStr=today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
   var timeStr=today.getHours()+':'+(today.getMinutes()<10?'0':'')+today.getMinutes();
   var agentName=getAgentName();
 
-  // Sheet 1 — Daily summary
-  var summary={
-    sheet:'summary',
-    agent_name:agentName,date:dateStr,time_of_optimization:timeStr,
-    day_start:document.getElementById('day-start-time').value,
-    day_end:document.getElementById('day-end-time').value,
+  // Sheet 1 summary
+  fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    sheet:'summary',agent_name:agentName,date:dateStr,time_of_optimization:timeStr,
+    day_start:document.getElementById('day-start-time').value,day_end:document.getElementById('day-end-time').value,
     reoptimization_count:reoptCount,total_stops:optimized.length,
-    stops_with_time_windows:twTotal,time_windows_met:twMet,
-    time_windows_missed:twMissed,time_window_compliance_pct:twCompliance,
-    optimised_distance_km:parseFloat(optKm.toFixed(2)),
-    unoptimised_distance_km:parseFloat((naive.km||0).toFixed(2)),
-    distance_saved_km:parseFloat(savedKm.toFixed(2)),
-    optimised_travel_min:parseFloat(optTravMin.toFixed(1)),
-    unoptimised_travel_min:parseFloat((naive.travMin||0).toFixed(1)),
-    travel_time_saved_min:parseFloat(savedTrav.toFixed(1)),
-    total_time_saved_min:parseFloat(savedTotal.toFixed(1)),
-    productive_ratio_optimised_pct:optProductivePct,
-    productive_ratio_unoptimised_pct:naiveProductivePct,
-    productive_ratio_improvement_pct:Math.max(0,optProductivePct-naiveProductivePct),
+    stops_with_time_windows:twTotal,time_windows_met:twMet,time_windows_missed:twTotal-twMet,
+    time_window_compliance_pct:twTotal>0?Math.round(twMet/twTotal*100):null,
+    optimised_distance_km:parseFloat(optKm.toFixed(2)),unoptimised_distance_km:parseFloat((naive.km||0).toFixed(2)),
+    distance_saved_km:parseFloat(savedKm.toFixed(2)),optimised_travel_min:parseFloat(optTravMin.toFixed(1)),
+    unoptimised_travel_min:parseFloat((naive.travMin||0).toFixed(1)),travel_time_saved_min:parseFloat(savedTrav.toFixed(1)),
+    total_time_saved_min:parseFloat(savedTotal.toFixed(1)),productive_ratio_optimised_pct:optProd,
+    productive_ratio_unoptimised_pct:naiveProd,productive_ratio_improvement_pct:Math.max(0,optProd-naiveProd),
     visit_time_min:optVisitMin,fuel_saved_inr:parseFloat(fuelSaved.toFixed(0))
-  };
+  })}).catch(function(){});
 
-  // Sheet 2 — Stop details (one entry per stop)
-  var stopDetails=optimized.map(function(s,i){
-    return{
-      sheet:'stops',
-      agent_name:agentName,date:dateStr,time_of_optimization:timeStr,
-      stop_number:i+1,shop_name:s.name,mid:s.mid||'',
-      visit_type:s.visitType||'',address:s.address,
-      lat:s.lat,lon:s.lon,
-      visit_duration_min:s.dur||15,
-      arrival_time:s.arrivalTime?fmtTime(s.arrivalTime):'',
-      departure_time:s.departTime?fmtTime(s.departTime):'',
-      road_distance_from_prev_km:s.travelledKm?parseFloat(s.travelledKm.toFixed(2)):0,
-      road_travel_time_from_prev_min:s.travelledMin?parseFloat(s.travelledMin.toFixed(1)):0,
-      time_window:s.from?(s.from+' – '+s.to):'',
-      time_window_met:s.from?(s.arrivalTime<=toMin(s.to)?'Yes':'No'):''
-    };
-  });
-
-  // Send summary row
-  fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(summary)}).catch(function(){});
-  // Send each stop row with small delay to avoid overwhelming
-  stopDetails.forEach(function(sd,i){
+  // Sheet 2 stop details
+  optimized.forEach(function(s,i){
     setTimeout(function(){
-      fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(sd)}).catch(function(){});
+      fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        sheet:'stops',agent_name:agentName,date:dateStr,time_of_optimization:timeStr,
+        stop_number:i+1,shop_name:s.name,mid:s.mid||'',visit_type:s.visitType||'',
+        address:s.address,lat:s.lat,lon:s.lon,
+        is_approximate_location:s.isOnboarding?'Yes':'No',
+        visit_duration_min:s.dur||15,onboarding_buffer_min:s.isOnboarding?ONBOARDING_BUFFER:0,
+        arrival_time:s.arrivalTime?fmtTime(s.arrivalTime):'',departure_time:s.departTime?fmtTime(s.departTime):'',
+        road_distance_from_prev_km:s.travelledKm?parseFloat(s.travelledKm.toFixed(2)):0,
+        road_travel_time_from_prev_min:s.travelledMin?parseFloat(s.travelledMin.toFixed(1)):0,
+        time_window:s.from?(s.from+' – '+s.to):'',
+        time_window_met:s.from?(s.arrivalTime<=toMin(s.to)?'Yes':'No'):''
+      })}).catch(function(){});
     },i*200);
   });
 }
@@ -1239,7 +1415,7 @@ function toggleExpand(btn){
   btn.textContent=(!open?'ℹ️ How is this calculated? ▴':'ℹ️ How is this calculated? ▾');
 }
 function toggleExpandById(id){var el=document.getElementById(id);if(el)el.classList.toggle('open');}
-function addStopFromGap(){_autoReoptimize=true;goTab('stops');showMsg('Add your stop — route will re-optimize automatically');}
+function addStopFromGap(){_autoReoptimize=true;goTab('stops');showMsg('Add your stop — will re-optimize automatically');}
 
 function drawOptimized(){
   markersArr.forEach(function(m){m.setMap(null);});markersArr=[];
@@ -1247,16 +1423,21 @@ function drawOptimized(){
   if(!gmap)return;
   var allNodes=[];
   if(startPlace)allNodes.push({s:startPlace,label:'S',color:'#22c55e'});
-  optimized.forEach(function(s,i){allNodes.push({s:s,label:String(i+1),color:'#5f259f'});});
+  optimized.forEach(function(s,i){allNodes.push({s:s,label:s.done?'✓':String(i+1),color:s.done?'#16a34a':'#5f259f'});});
   if(endPlace)allNodes.push({s:endPlace,label:'E',color:'#ef4444'});
   var bounds=new google.maps.LatLngBounds();
   allNodes.forEach(function(node,ni){
-    var m=new google.maps.Marker({position:{lat:node.s.lat,lng:node.s.lon},map:gmap,label:{text:node.label,color:'white',fontWeight:'bold',fontSize:'11px'},icon:mkIcon(node.color),title:node.s.name});
-    var iw=new google.maps.InfoWindow({content:'<b>'+esc(node.s.name)+'</b>'+(node.s.arrivalTime?'<br>🟢 '+fmtTime(node.s.arrivalTime):'')+(node.s.visitType?'<br>'+node.s.visitType:'')+(node.s.mid?'<br>MID: '+node.s.mid:'')});
+    var m=new google.maps.Marker({position:{lat:node.s.lat,lng:node.s.lon},map:gmap,
+      label:{text:node.label,color:'white',fontWeight:'bold',fontSize:'11px'},
+      icon:mkIcon(node.color),title:node.s.name});
+    var info='<b>'+esc(node.s.name)+'</b>'+(node.s.done?'<br>✅ Done':'')+(node.s.arrivalTime&&!node.s.done?'<br>🟢 '+fmtTime(node.s.arrivalTime):'');
+    var iw=new google.maps.InfoWindow({content:info});
     m.addListener('click',function(){iw.open(gmap,m);});markersArr.push(m);bounds.extend({lat:node.s.lat,lng:node.s.lon});
     if(ni<allNodes.length-1){
       var nxt=allNodes[ni+1].s;
-      var pl=new google.maps.Polyline({path:[{lat:node.s.lat,lng:node.s.lon},{lat:nxt.lat,lng:nxt.lon}],geodesic:true,strokeColor:'#5f259f',strokeOpacity:0.85,strokeWeight:4,icons:[{icon:{path:google.maps.SymbolPath.FORWARD_CLOSED_ARROW,scale:3},offset:'100%'}],map:gmap});
+      var pl=new google.maps.Polyline({path:[{lat:node.s.lat,lng:node.s.lon},{lat:nxt.lat,lng:nxt.lon}],geodesic:true,
+        strokeColor:node.s.done?'#16a34a':'#5f259f',strokeOpacity:0.85,strokeWeight:4,
+        icons:[{icon:{path:google.maps.SymbolPath.FORWARD_CLOSED_ARROW,scale:3},offset:'100%'}],map:gmap});
       polylines.push(pl);
     }
   });
