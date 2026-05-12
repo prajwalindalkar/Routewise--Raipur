@@ -1030,7 +1030,8 @@ async function optimize(remainingOnly, fromStop, startTime){
 
     saveToStorage();showLoading(false);
     renderRoute();drawOptimized();
-    if(!remainingOnly){goTab('route');syncToSheets();}
+    if(!remainingOnly){goTab('route');syncToSheets(true);}
+    else{syncFullSnapshot();}
     showMsg(remainingOnly?'✓ Remaining stops re-optimized':'✓ Optimized — '+route.length+' stops!');
   }catch(err){showLoading(false);showMsg('Error. Please try again.');console.error(err);}
 }
@@ -1089,14 +1090,22 @@ function confirmDone(){
   var s=optimized.find(function(x){return x.id==_doneStopId;});
   if(!s){closeDoneModal();return;}
   var actualDur=parseInt(document.getElementById('done-dur-input').value)||s.dur||15;
+  var wasAlreadyDone=s.done===true;
   s.actualDur=actualDur;
   s.done=true;
-  // Update in stops array too
   var orig=stops.find(function(x){return x.id==s.id;});
   if(orig){orig.done=true;orig.actualDur=actualDur;}
   closeDoneModal();
 
-  // Change 2: Get agent's current GPS location for verification
+  if(wasAlreadyDone){
+    // Just editing time on already-completed stop — no GPS re-check, no re-optimize
+    saveToStorage();renderRoute();
+    syncFullSnapshot();
+    showMsg('✓ Duration updated');
+    return;
+  }
+
+  // First time marking done — get GPS for verification
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(
       function(pos){
@@ -1109,7 +1118,7 @@ function confirmDone(){
         if(orig){orig.actualLat=agentLat;orig.actualLon=agentLon;orig.distanceFromStop=metres;orig.verificationStatus=s.verificationStatus;}
         saveToStorage();renderRoute();
         syncStopVerification(s);
-        showMsg(s.verificationStatus==='Verified'?'✅ Visit verified':'⚠️ Location check: '+s.verificationStatus);
+        showMsg(s.verificationStatus==='Verified'?'✅ Visit verified':'⚠️ Location: '+s.verificationStatus);
         reOptimizeRemaining(s);
       },
       function(){
@@ -1128,12 +1137,24 @@ function confirmDone(){
 
 function reOptimizeRemaining(completedStop){
   var remaining=optimized.filter(function(s){return!s.done;});
-  if(!remaining.length){saveToStorage();renderRoute();return;}
-  // Current time = now (minutes from midnight)
+  if(!remaining.length){saveToStorage();renderRoute();syncFullSnapshot();return;}
   var now=new Date();
   var nowMin=now.getHours()*60+now.getMinutes();
   optimize(true, completedStop, nowMin);
 }
+
+// Change 2: Edit a completed stop's actual duration
+function editDoneStop(stopId){
+  var s=optimized.find(function(x){return x.id==stopId;});
+  if(!s)return;
+  _doneStopId=stopId;
+  document.getElementById('done-modal-title').textContent='✎ Edit time at '+esc(s.name);
+  document.getElementById('done-dur-input').value=s.actualDur||s.dur||15;
+  document.getElementById('done-modal').classList.add('show');
+}
+
+// Override confirmDone to handle both marking done and editing done
+// (done-modal is shared — if stop is already done, it's an edit)
 
 // Send verification data to sheets
 function syncStopVerification(s){
@@ -1166,12 +1187,15 @@ function renderRoute(){
   if(endPlace&&optimized.length>0)optKm+=(optimized[optimized.length-1].kmToNext||0);
   var optTravMin=optimized.reduce(function(s,x){return s+(x.travelledMin||0);},0);
   if(endPlace&&optimized.length>0)optTravMin+=(optimized[optimized.length-1].travelToNext||0);
-  var optVisitMin=optimized.reduce(function(s,x){return s+(x.actualDur||x.dur||15);},0);
+  // Visit time is IDENTICAL for both — RouteWise only changes travel/idle, not time spent at stops
+  var sharedVisitMin=optimized.reduce(function(s,x){return s+(x.dur||15);},0);
+  var optVisitMin=sharedVisitMin;
   var optIdleMin=optimized.reduce(function(s,x){return s+(x.idleBefore||0);},0);
   var brkMin=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
   var optTotalMin=optTravMin+optVisitMin+optIdleMin+brkMin;
+  // Productive ratio uses same visit time for both — improvement is shown via travel time saved
   var optProductivePct=workingMin>0?Math.round(optVisitMin/workingMin*100):0;
-  var naiveProductivePct=workingMin>0&&naive.totalMin>0?Math.round((naive.visitMin||0)/Math.max(naive.totalMin,workingMin)*100):0;
+  var naiveProductivePct=optProductivePct;
   var savedKm=Math.max(0,naive.km-optKm);
   var savedTrav=Math.max(0,naive.travMin-optTravMin);
   var savedTotal=Math.max(0,naive.totalMin-optTotalMin);
@@ -1230,14 +1254,17 @@ function renderRoute(){
 
   html+='<div class="productive-card">'+
     '<div class="productive-title">⚡ Productive Time Ratio</div>'+
-    '<div class="productive-sub">% of working day spent with merchants vs travelling</div>'+
+    '<div class="productive-sub">% of working day spent with merchants. RouteWise saves travel time — freeing up time for more visits.</div>'+
     '<div class="productive-compare">'+
-      '<div class="productive-box without"><div class="productive-box-label">❌ Without</div><div class="productive-box-val">'+naiveProductivePct+'%</div><div class="productive-box-sub">'+fmtMin(naive.visitMin)+' visiting<br>'+fmtMin(naive.travMin)+' travelling</div></div>'+
-      '<div class="productive-box with"><div class="productive-box-label">✅ RouteWise</div><div class="productive-box-val">'+optProductivePct+'%</div><div class="productive-box-sub">'+fmtMin(optVisitMin)+' visiting<br>'+fmtMin(optTravMin)+' travelling</div></div>'+
+      '<div class="productive-box without"><div class="productive-box-label">❌ Without RouteWise</div><div class="productive-box-val">'+naiveProductivePct+'%</div><div class="productive-box-sub">'+fmtMin(optVisitMin)+' visiting<br>'+fmtMin(naive.travMin)+' travelling</div></div>'+
+      '<div class="productive-box with"><div class="productive-box-label">✅ With RouteWise</div><div class="productive-box-val">'+optProductivePct+'%</div><div class="productive-box-sub">'+fmtMin(optVisitMin)+' visiting<br>'+fmtMin(optTravMin)+' travelling</div></div>'+
     '</div>'+
     '<div class="productive-breakdown">'+
       '<div class="pb-row"><span class="pb-label">Working hours</span><span class="pb-val">'+fmtMin(workingMin)+'</span></div>'+
-      '<div class="pb-row"><span class="pb-label">Productive ratio improvement</span><span class="pb-val" style="color:#16a34a">+'+Math.max(0,optProductivePct-naiveProductivePct)+'%</span></div>'+
+      '<div class="pb-row"><span class="pb-label">Total visit time (same for both)</span><span class="pb-val">'+fmtMin(optVisitMin)+'</span></div>'+
+      '<div class="pb-row"><span class="pb-label">Travel time without RouteWise</span><span class="pb-val" style="color:#ef4444">'+fmtMin(naive.travMin)+'</span></div>'+
+      '<div class="pb-row"><span class="pb-label">Travel time with RouteWise</span><span class="pb-val" style="color:#16a34a">'+fmtMin(optTravMin)+'</span></div>'+
+      '<div class="pb-row"><span class="pb-label">Travel time saved</span><span class="pb-val" style="color:#16a34a">'+fmtMin(Math.max(0,naive.travMin-optTravMin))+'</span></div>'+
     '</div></div>';
 
   if(hasTimeWindows()){
@@ -1315,6 +1342,7 @@ function renderRoute(){
       if(isDone){
         html+='<div class="done-info">'+
           '✅ Completed — spent '+(s.actualDur||s.dur)+' min'+(s.actualDur&&s.actualDur!==s.dur?' (planned: '+s.dur+' min)':'')+
+          ' &nbsp;<button style="background:none;border:1px solid #16a34a;border-radius:6px;padding:2px 8px;font-size:11px;color:#16a34a;cursor:pointer" onclick="editDoneStop(\''+s.id+'\')">✎ Edit time</button>'+
         '</div>';
       } else {
         html+='<div class="time-breakdown">'+
@@ -1347,8 +1375,14 @@ function renderRoute(){
   el.innerHTML=html;
 }
 
+// Change 3: Single row per agent per day — upsert, not append
+// Called on every optimize, every mark done, every edit
+function syncFullSnapshot(){
+  syncToSheets(true); // true = upsert mode
+}
+
 // ── SYNC TO SHEETS ────────────────────────────────────────────────────────────
-function syncToSheets(){
+function syncToSheets(upsert){
   if(!optimized.length)return;
   var naive=optimized._naiveStats||{km:0,travMin:0,visitMin:0,idleMin:0,totalMin:0};
   var dayStart=getDayStart(),dayEnd=getDayEnd(),workingMin=dayEnd-dayStart;
@@ -1356,54 +1390,64 @@ function syncToSheets(){
   if(endPlace&&optimized.length>0)optKm+=(optimized[optimized.length-1].kmToNext||0);
   var optTravMin=optimized.reduce(function(s,x){return s+(x.travelledMin||0);},0);
   if(endPlace&&optimized.length>0)optTravMin+=(optimized[optimized.length-1].travelToNext||0);
+  // Visit time identical for both — only travel differs
   var optVisitMin=optimized.reduce(function(s,x){return s+(x.dur||15);},0);
   var optIdleMin=optimized.reduce(function(s,x){return s+(x.idleBefore||0);},0);
   var brkMin=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
   var optTotalMin=optTravMin+optVisitMin+optIdleMin+brkMin;
   var optProd=workingMin>0?Math.round(optVisitMin/workingMin*100):0;
-  var naiveProd=workingMin>0?Math.round((naive.visitMin||0)/Math.max(naive.totalMin||1,workingMin)*100):0;
+  var naiveProd=optProd; // same visit time, ratio identical — improvement is travel time saved
   var savedKm=Math.max(0,naive.km-optKm);
   var savedTrav=Math.max(0,naive.travMin-optTravMin);
   var savedTotal=Math.max(0,naive.totalMin-optTotalMin);
   var fuelSaved=savedKm*FUEL_RATE;
   var twMet=optimized.filter(function(s){return s.from&&s.arrivalTime&&s.arrivalTime<=toMin(s.to);}).length;
   var twTotal=optimized.filter(function(s){return s.from;}).length;
+  var doneCount=optimized.filter(function(s){return s.done;}).length;
   var today=new Date();
   var dateStr=today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
   var timeStr=today.getHours()+':'+(today.getMinutes()<10?'0':'')+today.getMinutes();
   var agentName=getAgentName();
 
-  // Sheet 1 summary
+  // Sheet 1 summary — upsert: one row per agent per date
   fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-    sheet:'summary',agent_name:agentName,date:dateStr,time_of_optimization:timeStr,
+    sheet:'summary',upsert:true,agent_name:agentName,date:dateStr,last_updated:timeStr,
     day_start:document.getElementById('day-start-time').value,day_end:document.getElementById('day-end-time').value,
-    reoptimization_count:reoptCount,total_stops:optimized.length,
+    reoptimization_count:reoptCount,total_stops:optimized.length,stops_completed:doneCount,
     stops_with_time_windows:twTotal,time_windows_met:twMet,time_windows_missed:twTotal-twMet,
     time_window_compliance_pct:twTotal>0?Math.round(twMet/twTotal*100):null,
     optimised_distance_km:parseFloat(optKm.toFixed(2)),unoptimised_distance_km:parseFloat((naive.km||0).toFixed(2)),
     distance_saved_km:parseFloat(savedKm.toFixed(2)),optimised_travel_min:parseFloat(optTravMin.toFixed(1)),
     unoptimised_travel_min:parseFloat((naive.travMin||0).toFixed(1)),travel_time_saved_min:parseFloat(savedTrav.toFixed(1)),
-    total_time_saved_min:parseFloat(savedTotal.toFixed(1)),productive_ratio_optimised_pct:optProd,
-    productive_ratio_unoptimised_pct:naiveProd,productive_ratio_improvement_pct:Math.max(0,optProd-naiveProd),
-    visit_time_min:optVisitMin,fuel_saved_inr:parseFloat(fuelSaved.toFixed(0))
+    total_time_saved_min:parseFloat(savedTotal.toFixed(1)),
+    productive_ratio_pct:optProd,visit_time_min:optVisitMin,fuel_saved_inr:parseFloat(fuelSaved.toFixed(0))
   })}).catch(function(){});
 
-  // Sheet 2 stop details
+  // Sheet 2 stop details — upsert: delete existing rows for agent+date then rewrite
+  // Send a clear signal first then all stops
+  fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    sheet:'stops_clear',upsert:true,agent_name:agentName,date:dateStr
+  })}).catch(function(){});
+
   optimized.forEach(function(s,i){
     setTimeout(function(){
       fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        sheet:'stops',agent_name:agentName,date:dateStr,time_of_optimization:timeStr,
+        sheet:'stops',upsert:true,agent_name:agentName,date:dateStr,last_updated:timeStr,
         stop_number:i+1,shop_name:s.name,mid:s.mid||'',visit_type:s.visitType||'',
         address:s.address,lat:s.lat,lon:s.lon,
         is_approximate_location:s.isOnboarding?'Yes':'No',
-        visit_duration_min:s.dur||15,onboarding_buffer_min:s.isOnboarding?ONBOARDING_BUFFER:0,
+        planned_duration_min:s.dur||15,onboarding_buffer_min:s.isOnboarding?ONBOARDING_BUFFER:0,
+        actual_duration_min:s.actualDur||'',
+        status:s.done?'Completed':'Not Visited',
         arrival_time:s.arrivalTime?fmtTime(s.arrivalTime):'',departure_time:s.departTime?fmtTime(s.departTime):'',
         road_distance_from_prev_km:s.travelledKm?parseFloat(s.travelledKm.toFixed(2)):0,
         road_travel_time_from_prev_min:s.travelledMin?parseFloat(s.travelledMin.toFixed(1)):0,
         time_window:s.from?(s.from+' – '+s.to):'',
-        time_window_met:s.from?(s.arrivalTime<=toMin(s.to)?'Yes':'No'):''
+        time_window_met:s.from?(s.arrivalTime<=toMin(s.to)?'Yes':'No'):'',
+        verification_status:s.verificationStatus||'',
+        distance_from_stop_metres:s.distanceFromStop||''
       })}).catch(function(){});
-    },i*200);
+    },300+(i*200));
   });
 }
 
