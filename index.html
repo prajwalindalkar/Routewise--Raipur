@@ -484,7 +484,7 @@ var LS_KEY='routewise_raipur_v5';
 var LS_AGENT='routewise_agent_name';
 var SHEETS_URL='https://script.google.com/macros/s/AKfycbzU8wZNHC1o2RRt74mbCPo9tbCJt0D3JiwkQmu52BAtlz25oQ3xdnvs8rMelUPsOBaqyw/exec';
 var reoptCount=0;
-var FUEL_RATE=6;
+var FUEL_RATE=3;
 var distCache={};
 var ONBOARDING_BUFFER=10;
 var _idCounter=Date.now(); // clean unique integer IDs
@@ -965,7 +965,8 @@ async function optimize(remainingOnly, fromStop, startTime){
   showLoading(true, remainingOnly?'Re-optimizing remaining stops…':'Calculating real road distances…');
   try{
     var dayStart=remainingOnly?startTime:getDayStart();
-    var pendingStops=remainingOnly?stops.filter(function(s){return!s.done;}):stops;
+    // Always exclude done stops from routing — they are prepended back after optimization
+    var pendingStops=stops.filter(function(s){return!s.done;});
     var curStart=remainingOnly?fromStop:startPlace;
 
     var allPoints=[curStart].concat(pendingStops);
@@ -1019,13 +1020,10 @@ async function optimize(remainingOnly, fromStop, startTime){
     var naiveStats=null;
     if(!remainingOnly)naiveStats=await calcUnoptimisedReal(matrix,allPoints,dayStart);
 
-    // Merge done stops back at the front if re-optimizing remaining
-    if(remainingOnly){
-      var doneStops=optimized.filter(function(s){return s.done;});
-      optimized=doneStops.concat(route);
-    } else {
-      optimized=route;
-    }
+    // Always preserve done stops — they must appear in Stop Details sheet at all times
+    // Collect done stops from current optimized array before overwriting
+    var doneStops=optimized.filter(function(s){return s.done;});
+    optimized=doneStops.concat(route);
     if(naiveStats)optimized._naiveStats=naiveStats;
     else if(!optimized._naiveStats)optimized._naiveStats={km:0,travMin:0,visitMin:0,idleMin:0,totalMin:0};
     optimized._matrix=matrix;optimized._allPoints=allPoints;
@@ -1249,7 +1247,7 @@ function renderRoute(){
     '</div>'+
     '<div class="expandable-section">'+
       '<button class="expand-toggle" onclick="toggleExpand(this)">ℹ️ How is this calculated? ▾</button>'+
-      '<div class="expand-body">Without RouteWise numbers are based on visiting stops in the order you added them — which is how agents naturally plan their day. Optimized route uses Google Maps Directions API for actual road distances. Fuel cost estimated at ₹6/km for two-wheeler.</div>'+
+      '<div class="expand-body">Without RouteWise numbers are based on visiting stops in the order you added them — which is how agents naturally plan their day. Optimized route uses Google Maps Directions API for actual road distances. Fuel cost estimated at ₹3/km for two-wheeler.</div>'+
     '</div></div>';
 
   html+='<div class="productive-card">'+
@@ -1425,31 +1423,36 @@ function syncToSheets(upsert){
     productive_ratio_pct:optProd,visit_time_min:optVisitMin,fuel_saved_inr:parseFloat(fuelSaved.toFixed(0))
   })}).catch(function(){});
 
-  // Sheet 2 stop details — upsert: delete existing rows for agent+date then rewrite
-  // Send a clear signal first then all stops
+  // Sheet 2 stop details — clear then rewrite all stops including completed ones
   fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
     sheet:'stops_clear',upsert:true,agent_name:agentName,date:dateStr
   })}).catch(function(){});
 
-  optimized.forEach(function(s,i){
+  // Snapshot full optimized array NOW (including done stops) before any async delays
+  var stopsSnapshot=optimized.map(function(s,i){return{s:s,i:i};});
+  stopsSnapshot.forEach(function(item){
+    var s=item.s,i=item.i;
+    var stopData={
+      sheet:'stops',upsert:true,agent_name:agentName,date:dateStr,last_updated:timeStr,
+      stop_number:i+1,shop_name:s.name,mid:s.mid||'',visit_type:s.visitType||'',
+      address:s.address,lat:s.lat,lon:s.lon,
+      is_approximate_location:s.isOnboarding?'Yes':'No',
+      planned_duration_min:s.dur||15,onboarding_buffer_min:s.isOnboarding?ONBOARDING_BUFFER:0,
+      actual_duration_min:s.actualDur||'',
+      status:s.done?'Completed':'Not Visited',
+      arrival_time:s.arrivalTime?fmtTime(s.arrivalTime):'',
+      departure_time:s.departTime?fmtTime(s.departTime):'',
+      road_distance_from_prev_km:s.travelledKm?parseFloat(s.travelledKm.toFixed(2)):0,
+      road_travel_time_from_prev_min:s.travelledMin?parseFloat(s.travelledMin.toFixed(1)):0,
+      time_window:s.from?(s.from+' – '+s.to):'',
+      time_window_met:s.from?(s.arrivalTime!=null&&s.arrivalTime<=toMin(s.to)?'Yes':'No'):'',
+      verification_status:s.verificationStatus||'',
+      distance_from_stop_metres:s.distanceFromStop||''
+    };
     setTimeout(function(){
-      fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        sheet:'stops',upsert:true,agent_name:agentName,date:dateStr,last_updated:timeStr,
-        stop_number:i+1,shop_name:s.name,mid:s.mid||'',visit_type:s.visitType||'',
-        address:s.address,lat:s.lat,lon:s.lon,
-        is_approximate_location:s.isOnboarding?'Yes':'No',
-        planned_duration_min:s.dur||15,onboarding_buffer_min:s.isOnboarding?ONBOARDING_BUFFER:0,
-        actual_duration_min:s.actualDur||'',
-        status:s.done?'Completed':'Not Visited',
-        arrival_time:s.arrivalTime?fmtTime(s.arrivalTime):'',departure_time:s.departTime?fmtTime(s.departTime):'',
-        road_distance_from_prev_km:s.travelledKm?parseFloat(s.travelledKm.toFixed(2)):0,
-        road_travel_time_from_prev_min:s.travelledMin?parseFloat(s.travelledMin.toFixed(1)):0,
-        time_window:s.from?(s.from+' – '+s.to):'',
-        time_window_met:s.from?(s.arrivalTime<=toMin(s.to)?'Yes':'No'):'',
-        verification_status:s.verificationStatus||'',
-        distance_from_stop_metres:s.distanceFromStop||''
-      })}).catch(function(){});
-    },300+(i*200));
+      fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(stopData)}).catch(function(){});
+    },500+(i*250));
   });
 }
 
