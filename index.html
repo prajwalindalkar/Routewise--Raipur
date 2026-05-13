@@ -1196,9 +1196,10 @@ function renderRoute(){
   var optIdleMin=optimized.reduce(function(s,x){return s+(x.idleBefore||0);},0);
   var brkMin=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
   var optTotalMin=optTravMin+optVisitMin+optIdleMin+brkMin;
-  // Productive ratio uses same visit time for both — improvement is shown via travel time saved
-  var optProductivePct=workingMin>0?Math.round(optVisitMin/workingMin*100):0;
-  var naiveProductivePct=optProductivePct;
+  // Productive ratio = visit time / (visit time + travel time)
+  // This correctly shows how much of active field time is spent with merchants vs travelling
+  var optProductivePct=(optVisitMin+optTravMin)>0?Math.round(optVisitMin/(optVisitMin+optTravMin)*100):0;
+  var naiveProductivePct=(optVisitMin+naive.travMin)>0?Math.round(optVisitMin/(optVisitMin+naive.travMin)*100):0;
   var savedKm=Math.max(0,naive.km-optKm);
   var savedTrav=Math.max(0,naive.travMin-optTravMin);
   var savedTotal=Math.max(0,naive.totalMin-optTotalMin);
@@ -1257,7 +1258,7 @@ function renderRoute(){
 
   html+='<div class="productive-card">'+
     '<div class="productive-title">⚡ Productive Time Ratio</div>'+
-    '<div class="productive-sub">% of working day spent with merchants. RouteWise saves travel time — freeing up time for more visits.</div>'+
+    '<div class="productive-sub">% of active field time spent with merchants (visit time ÷ visit + travel time). Higher is better.</div>'+
     '<div class="productive-compare">'+
       '<div class="productive-box without"><div class="productive-box-label">❌ Without RouteWise</div><div class="productive-box-val">'+naiveProductivePct+'%</div><div class="productive-box-sub">'+fmtMin(optVisitMin)+' visiting<br>'+fmtMin(naive.travMin)+' travelling</div></div>'+
       '<div class="productive-box with"><div class="productive-box-label">✅ With RouteWise</div><div class="productive-box-val">'+optProductivePct+'%</div><div class="productive-box-sub">'+fmtMin(optVisitMin)+' visiting<br>'+fmtMin(optTravMin)+' travelling</div></div>'+
@@ -1398,8 +1399,7 @@ function syncToSheets(upsert){
   var optIdleMin=optimized.reduce(function(s,x){return s+(x.idleBefore||0);},0);
   var brkMin=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
   var optTotalMin=optTravMin+optVisitMin+optIdleMin+brkMin;
-  var optProd=workingMin>0?Math.round(optVisitMin/workingMin*100):0;
-  var naiveProd=optProd; // same visit time, ratio identical — improvement is travel time saved
+  var optProd=(optVisitMin+optTravMin)>0?Math.round(optVisitMin/(optVisitMin+optTravMin)*100):0;
   var savedKm=Math.max(0,naive.km-optKm);
   var savedTrav=Math.max(0,naive.travMin-optTravMin);
   var savedTotal=Math.max(0,naive.totalMin-optTotalMin);
