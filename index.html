@@ -1018,7 +1018,14 @@ async function optimize(remainingOnly, fromStop, startTime){
     }
 
     var naiveStats=null;
-    if(!remainingOnly)naiveStats=await calcUnoptimisedReal(matrix,allPoints,dayStart);
+    if(!remainingOnly){
+      // Naive baseline always uses ALL stops in natural order from original startPlace
+      // This never shrinks as stops get completed — it represents the full day without RouteWise
+      var naiveAllPoints=[startPlace].concat(stops);
+      if(endPlace)naiveAllPoints.push(endPlace);
+      var naiveMatrix=await buildDistanceMatrix(naiveAllPoints);
+      naiveStats=calcUnoptimisedReal(naiveMatrix,naiveAllPoints,getDayStart());
+    }
 
     // Always preserve done stops — they must appear in Stop Details sheet at all times
     // Collect done stops from current optimized array before overwriting
@@ -1036,9 +1043,9 @@ async function optimize(remainingOnly, fromStop, startTime){
   }catch(err){showLoading(false);showMsg('Error. Please try again.');console.error(err);}
 }
 
-async function calcUnoptimisedReal(matrix,allPoints,dayStart){
-  // "Without RouteWise" = stops in the natural order the agent added them
-  // This is the honest comparison — agents visit in the order they think of stops
+function calcUnoptimisedReal(matrix,allPoints,dayStart){
+  // "Without RouteWise" = ALL stops in natural order the agent added them
+  // Always uses full stops array so baseline never shrinks as stops get completed
   var r=calcSingleRoute(stops,matrix,allPoints,dayStart);
   return{km:r.km,travMin:r.travMin,visitMin:r.visitMin,idleMin:r.idleMin,breakMin:r.breakMin,totalMin:r.totalMin};
 }
@@ -1423,15 +1430,25 @@ function syncToSheets(upsert){
     productive_ratio_pct:optProd,visit_time_min:optVisitMin,fuel_saved_inr:parseFloat(fuelSaved.toFixed(0))
   })}).catch(function(){});
 
-  // Sheet 2 stop details — clear then rewrite all stops including completed ones
+  // Sheet 2 stop details — always sync ALL stops from master stops array
+  // Merge timing/status data from optimized array where available
+  // This guarantees all stops appear even if some were never routed yet
   fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
     sheet:'stops_clear',upsert:true,agent_name:agentName,date:dateStr
   })}).catch(function(){});
 
-  // Snapshot full optimized array NOW (including done stops) before any async delays
-  var stopsSnapshot=optimized.map(function(s,i){return{s:s,i:i};});
-  stopsSnapshot.forEach(function(item){
-    var s=item.s,i=item.i;
+  // Build master list: all stops from stops[] merged with routing data from optimized[]
+  var optimizedById={};
+  optimized.forEach(function(s){optimizedById[String(s.id)]=s;});
+
+  var masterStops=stops.map(function(s){
+    var opt=optimizedById[String(s.id)];
+    // Use optimized version if available (has timing, travelledKm etc), else use stops version
+    return opt||s;
+  });
+
+  // Snapshot now before async delays
+  masterStops.forEach(function(s,i){
     var stopData={
       sheet:'stops',upsert:true,agent_name:agentName,date:dateStr,last_updated:timeStr,
       stop_number:i+1,shop_name:s.name,mid:s.mid||'',visit_type:s.visitType||'',
