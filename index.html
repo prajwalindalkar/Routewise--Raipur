@@ -1039,15 +1039,10 @@ async function optimize(remainingOnly, fromStop, startTime){
 }
 
 async function calcUnoptimisedReal(matrix,allPoints,dayStart){
-  if(stops.length<=1)return calcSingleRoute(stops,matrix,allPoints,dayStart);
-  var N=50,tKm=0,tTrav=0,tIdle=0,tMin=0,tVisit=0;
-  for(var i=0;i<N;i++){
-    var sh=stops.slice().sort(function(){return Math.random()-0.5;});
-    var r=calcSingleRoute(sh,matrix,allPoints,dayStart);
-    tKm+=r.km;tTrav+=r.travMin;tIdle+=r.idleMin;tMin+=r.totalMin;tVisit+=r.visitMin;
-  }
-  var brkTotal=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
-  return{km:tKm/N,travMin:tTrav/N,visitMin:tVisit/N,idleMin:tIdle/N,breakMin:brkTotal,totalMin:tMin/N};
+  // "Without RouteWise" = stops in the natural order the agent added them
+  // This is the honest comparison — agents visit in the order they think of stops
+  var r=calcSingleRoute(stops,matrix,allPoints,dayStart);
+  return{km:r.km,travMin:r.travMin,visitMin:r.visitMin,idleMin:r.idleMin,breakMin:r.breakMin,totalMin:r.totalMin};
 }
 
 function calcSingleRoute(orderedStops,matrix,allPoints,dayStart){
@@ -1162,7 +1157,9 @@ function editDoneStop(stopId){
 // Send verification data to sheets
 function syncStopVerification(s){
   var today=new Date();
-  var dateStr=today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+  var dd=String(today.getDate()).padStart(2,'0');
+  var mm=String(today.getMonth()+1).padStart(2,'0');
+  var dateStr=dd+'-'+mm+'-'+today.getFullYear();
   var timeStr=today.getHours()+':'+(today.getMinutes()<10?'0':'')+today.getMinutes();
   fetch(SHEETS_URL,{
     method:'POST',mode:'no-cors',
@@ -1196,8 +1193,7 @@ function renderRoute(){
   var optIdleMin=optimized.reduce(function(s,x){return s+(x.idleBefore||0);},0);
   var brkMin=breaks.reduce(function(s,b){return s+(b.dur||30);},0);
   var optTotalMin=optTravMin+optVisitMin+optIdleMin+brkMin;
-  // Productive ratio = visit time / (visit time + travel time)
-  // This correctly shows how much of active field time is spent with merchants vs travelling
+  // Productive ratio = visit time / (visit + travel) — true field efficiency
   var optProductivePct=(optVisitMin+optTravMin)>0?Math.round(optVisitMin/(optVisitMin+optTravMin)*100):0;
   var naiveProductivePct=(optVisitMin+naive.travMin)>0?Math.round(optVisitMin/(optVisitMin+naive.travMin)*100):0;
   var savedKm=Math.max(0,naive.km-optKm);
@@ -1253,12 +1249,12 @@ function renderRoute(){
     '</div>'+
     '<div class="expandable-section">'+
       '<button class="expand-toggle" onclick="toggleExpand(this)">ℹ️ How is this calculated? ▾</button>'+
-      '<div class="expand-body">Without RouteWise numbers are calculated by simulating 50 random orderings of your stops and averaging results. All distances and times use Google Maps Directions API. Fuel cost estimated at ₹6/km for two-wheeler.</div>'+
+      '<div class="expand-body">Without RouteWise numbers are based on visiting stops in the order you added them — which is how agents naturally plan their day. Optimized route uses Google Maps Directions API for actual road distances. Fuel cost estimated at ₹6/km for two-wheeler.</div>'+
     '</div></div>';
 
   html+='<div class="productive-card">'+
     '<div class="productive-title">⚡ Productive Time Ratio</div>'+
-    '<div class="productive-sub">% of active field time spent with merchants (visit time ÷ visit + travel time). Higher is better.</div>'+
+    '<div class="productive-sub">% of active field time spent with merchants (visit ÷ visit + travel). Higher is better.</div>'+
     '<div class="productive-compare">'+
       '<div class="productive-box without"><div class="productive-box-label">❌ Without RouteWise</div><div class="productive-box-val">'+naiveProductivePct+'%</div><div class="productive-box-sub">'+fmtMin(optVisitMin)+' visiting<br>'+fmtMin(naive.travMin)+' travelling</div></div>'+
       '<div class="productive-box with"><div class="productive-box-label">✅ With RouteWise</div><div class="productive-box-val">'+optProductivePct+'%</div><div class="productive-box-sub">'+fmtMin(optVisitMin)+' visiting<br>'+fmtMin(optTravMin)+' travelling</div></div>'+
@@ -1275,7 +1271,7 @@ function renderRoute(){
     html+='<div class="idle-card">'+
       '<div class="idle-card-header"><span class="idle-card-title">💤 Idle / Waiting Time</span>'+
       '<button class="idle-i-btn" onclick="toggleExpandById(\'idle-exp\')">ℹ️</button></div>'+
-      '<div class="idle-explain" id="idle-exp">Idle time occurs when a stop has a time window and the agent arrives early. Without RouteWise, random ordering can send agents hours too early. We simulate 50 random orderings using Google Maps road times to calculate average idle time.</div>'+
+      '<div class="idle-explain" id="idle-exp">Idle time occurs when a stop has a time window and the agent arrives early. Without RouteWise, visiting in the natural order you added stops can cause long waits at time-windowed stops. The optimized route minimizes this idle time.</div>'+
       '<div class="idle-compare">'+
         '<div class="idle-box bad"><div class="idle-box-label">❌ Without</div><div class="idle-box-val">'+fmtMin(naive.idleMin)+'</div><div class="idle-box-sub">avg wasted</div></div>'+
         '<div class="idle-box good"><div class="idle-box-label">✅ Optimized</div><div class="idle-box-val">'+fmtMin(optIdleMin)+'</div><div class="idle-box-sub">idle time</div></div>'+
@@ -1408,7 +1404,10 @@ function syncToSheets(upsert){
   var twTotal=optimized.filter(function(s){return s.from;}).length;
   var doneCount=optimized.filter(function(s){return s.done;}).length;
   var today=new Date();
-  var dateStr=today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+  var dd=String(today.getDate()).padStart(2,'0');
+  var mm=String(today.getMonth()+1).padStart(2,'0');
+  var yyyy=today.getFullYear();
+  var dateStr=dd+'-'+mm+'-'+yyyy;
   var timeStr=today.getHours()+':'+(today.getMinutes()<10?'0':'')+today.getMinutes();
   var agentName=getAgentName();
 
