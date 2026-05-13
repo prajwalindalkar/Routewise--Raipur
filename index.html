@@ -1025,14 +1025,19 @@ async function optimize(remainingOnly, fromStop, startTime){
       if(endPlace)naiveAllPoints.push(endPlace);
       var naiveMatrix=await buildDistanceMatrix(naiveAllPoints);
       naiveStats=calcUnoptimisedReal(naiveMatrix,naiveAllPoints,getDayStart());
+    } else {
+      // Re-optimizing remaining — preserve the naive stats from the previous full optimize
+      // Never reset to zero — carry forward what was calculated on first optimize
+      naiveStats=optimized._naiveStats||null;
     }
 
     // Always preserve done stops — they must appear in Stop Details sheet at all times
     // Collect done stops from current optimized array before overwriting
     var doneStops=optimized.filter(function(s){return s.done;});
     optimized=doneStops.concat(route);
+    // Always restore naiveStats — creating new array loses the property
     if(naiveStats)optimized._naiveStats=naiveStats;
-    else if(!optimized._naiveStats)optimized._naiveStats={km:0,travMin:0,visitMin:0,idleMin:0,totalMin:0};
+    else optimized._naiveStats={km:0,travMin:0,visitMin:0,idleMin:0,totalMin:0};
     optimized._matrix=matrix;optimized._allPoints=allPoints;
 
     saveToStorage();showLoading(false);
@@ -1044,10 +1049,18 @@ async function optimize(remainingOnly, fromStop, startTime){
 }
 
 function calcUnoptimisedReal(matrix,allPoints,dayStart){
-  // "Without RouteWise" = ALL stops in natural order the agent added them
-  // Always uses full stops array so baseline never shrinks as stops get completed
-  var r=calcSingleRoute(stops,matrix,allPoints,dayStart);
-  return{km:r.km,travMin:r.travMin,visitMin:r.visitMin,idleMin:r.idleMin,breakMin:r.breakMin,totalMin:r.totalMin};
+  // "Without RouteWise" = worst case of 15 random orderings
+  // Natural order is often close to optimal for small stop counts in a clustered city
+  // Worst case gives a more meaningful "what could go wrong" comparison
+  if(stops.length<=1)return calcSingleRoute(stops,matrix,allPoints,dayStart);
+  var worst=null;
+  var N=15;
+  for(var i=0;i<N;i++){
+    var shuffled=stops.slice().sort(function(){return Math.random()-0.5;});
+    var r=calcSingleRoute(shuffled,matrix,allPoints,dayStart);
+    if(!worst||r.travMin>worst.travMin)worst=r;
+  }
+  return{km:worst.km,travMin:worst.travMin,visitMin:worst.visitMin,idleMin:worst.idleMin,breakMin:worst.breakMin,totalMin:worst.totalMin};
 }
 
 function calcSingleRoute(orderedStops,matrix,allPoints,dayStart){
@@ -1254,7 +1267,7 @@ function renderRoute(){
     '</div>'+
     '<div class="expandable-section">'+
       '<button class="expand-toggle" onclick="toggleExpand(this)">ℹ️ How is this calculated? ▾</button>'+
-      '<div class="expand-body">Without RouteWise numbers are based on visiting stops in the order you added them — which is how agents naturally plan their day. Optimized route uses Google Maps Directions API for actual road distances. Fuel cost estimated at ₹3/km for two-wheeler.</div>'+
+      '<div class="expand-body">Without RouteWise numbers show the worst case from 15 random orderings of your stops — representing a bad planning day. Optimized route uses Google Maps Directions API for actual road distances. Fuel cost estimated at ₹3/km for two-wheeler.</div>'+
     '</div></div>';
 
   html+='<div class="productive-card">'+
@@ -1276,7 +1289,7 @@ function renderRoute(){
     html+='<div class="idle-card">'+
       '<div class="idle-card-header"><span class="idle-card-title">💤 Idle / Waiting Time</span>'+
       '<button class="idle-i-btn" onclick="toggleExpandById(\'idle-exp\')">ℹ️</button></div>'+
-      '<div class="idle-explain" id="idle-exp">Idle time occurs when a stop has a time window and the agent arrives early. Without RouteWise, visiting in the natural order you added stops can cause long waits at time-windowed stops. The optimized route minimizes this idle time.</div>'+
+      '<div class="idle-explain" id="idle-exp">Idle time occurs when a stop has a time window and the agent arrives early. Without RouteWise, a bad ordering can cause long waits at time-windowed stops. We simulate 15 random orderings to find the worst case.</div>'+
       '<div class="idle-compare">'+
         '<div class="idle-box bad"><div class="idle-box-label">❌ Without</div><div class="idle-box-val">'+fmtMin(naive.idleMin)+'</div><div class="idle-box-sub">avg wasted</div></div>'+
         '<div class="idle-box good"><div class="idle-box-label">✅ Optimized</div><div class="idle-box-val">'+fmtMin(optIdleMin)+'</div><div class="idle-box-sub">idle time</div></div>'+
