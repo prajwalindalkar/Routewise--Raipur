@@ -486,7 +486,9 @@ var SHEETS_URL='https://script.google.com/macros/s/AKfycbzU8wZNHC1o2RRt74mbCPo9t
 var reoptCount=0;
 var FUEL_RATE=6;
 var distCache={};
-var ONBOARDING_BUFFER=10; // extra minutes for onboarding visits
+var ONBOARDING_BUFFER=10;
+var _idCounter=Date.now(); // clean unique integer IDs
+function newId(){return String(++_idCounter);}
 
 // Form state — persists when navigating to map
 var _formState={lat:null,lon:null,addr:'',editId:null};
@@ -711,7 +713,7 @@ function openStopForm(editId, restoreState){
     }
   } else if(editId){
     // Load existing stop data
-    var s=stops.find(function(x){return x.id===editId;});
+    var s=stops.find(function(x){return String(x.id)===String(editId);});
     if(!s)return;
     _formState.lat=s.lat;_formState.lon=s.lon;_formState.addr=s.address;
     document.getElementById('f-name').value=s.name||'';
@@ -776,7 +778,7 @@ function submitStopForm(){
 
   if(_formState.editId){
     // Update existing stop
-    var s=stops.find(function(x){return x.id===_formState.editId;});
+    var s=stops.find(function(x){return String(x.id)===String(_formState.editId);});
     if(s){
       s.name=name;s.mid=mid;s.visitType=visitType;
       s.address=_formState.addr||_formState.lat.toFixed(4)+', '+_formState.lon.toFixed(4);
@@ -817,9 +819,9 @@ function clearPoint(which){
 function updateOptBtn(){document.getElementById('opt-btn').disabled=!(startPlace&&stops.length>=1);}
 
 // ── BREAKS ────────────────────────────────────────────────────────────────────
-function addBreak(){breaks.push({id:Date.now()+Math.random(),name:'Lunch',time:'13:00',dur:45});renderBreaks();saveToStorage();}
-function delBreak(id){breaks=breaks.filter(function(b){return b.id!==id;});renderBreaks();saveToStorage();}
-function setBreakField(id,f,v){var b=breaks.find(function(x){return x.id===id;});if(b){b[f]=v;saveToStorage();}}
+function addBreak(){breaks.push({id:newId(),name:'Lunch',time:'13:00',dur:45});renderBreaks();saveToStorage();}
+function delBreak(id){id=String(id);breaks=breaks.filter(function(b){return String(b.id)!==id;});renderBreaks();saveToStorage();}
+function setBreakField(id,f,v){id=String(id);var b=breaks.find(function(x){return String(x.id)===id;});if(b){b[f]=v;saveToStorage();}}
 function renderBreaks(){
   var el=document.getElementById('breaks-list');
   if(!breaks.length){el.innerHTML='';return;}
@@ -840,7 +842,7 @@ function renderBreaks(){
 // ── STOPS ─────────────────────────────────────────────────────────────────────
 function addStop(s){
   if(stops.length>=25){showMsg('Max 25 stops');return;}
-  s.id=Date.now()+Math.random();
+  s.id=newId();
   if(s.from===undefined)s.from='';
   if(s.to===undefined)s.to='';
   if(s.dur===undefined)s.dur=15;
@@ -849,8 +851,8 @@ function addStop(s){
   showMsg('✓ Added: '+s.name);
   if(_autoReoptimize){_autoReoptimize=false;setTimeout(function(){optimize();},400);}
 }
-function delStop(id){stops=stops.filter(function(s){return s.id!==id;});renderStops();redrawMarkers();updateOptBtn();saveToStorage();}
-function setDur(id,v){var s=stops.find(function(x){return x.id===id;});if(s){s.dur=Math.max(1,parseInt(v)||15);saveToStorage();}}
+function delStop(id){id=String(id);stops=stops.filter(function(s){return String(s.id)!==id;});renderStops();redrawMarkers();updateOptBtn();saveToStorage();}
+function setDur(id,v){id=String(id);var s=stops.find(function(x){return String(x.id)===id;});if(s){s.dur=Math.max(1,parseInt(v)||15);saveToStorage();}}
 
 function renderStops(){
   var el=document.getElementById('stops-list');updateOptBtn();
@@ -1076,7 +1078,8 @@ function showLoading(show,msg){
 
 // ── DONE VISIT (Change 1 & 2) ─────────────────────────────────────────────────
 function markDone(stopId){
-  var s=optimized.find(function(x){return x.id==stopId;});
+  stopId=String(stopId);
+  var s=optimized.find(function(x){return String(x.id)===stopId;});
   if(!s)return;
   _doneStopId=stopId;
   document.getElementById('done-modal-title').textContent='✓ Done at '+esc(s.name);
@@ -1087,13 +1090,13 @@ function markDone(stopId){
 function closeDoneModal(){document.getElementById('done-modal').classList.remove('show');_doneStopId=null;}
 
 function confirmDone(){
-  var s=optimized.find(function(x){return x.id==_doneStopId;});
+  var s=optimized.find(function(x){return String(x.id)===String(_doneStopId);});
   if(!s){closeDoneModal();return;}
   var actualDur=parseInt(document.getElementById('done-dur-input').value)||s.dur||15;
   var wasAlreadyDone=s.done===true;
   s.actualDur=actualDur;
   s.done=true;
-  var orig=stops.find(function(x){return x.id==s.id;});
+  var orig=stops.find(function(x){return String(x.id)===String(s.id);});
   if(orig){orig.done=true;orig.actualDur=actualDur;}
   closeDoneModal();
 
@@ -1117,8 +1120,7 @@ function confirmDone(){
         else{s.verificationStatus='Not Verified';}
         if(orig){orig.actualLat=agentLat;orig.actualLon=agentLon;orig.distanceFromStop=metres;orig.verificationStatus=s.verificationStatus;}
         saveToStorage();renderRoute();
-        syncStopVerification(s);
-        showMsg(s.verificationStatus==='Verified'?'✅ Visit verified':'⚠️ Location: '+s.verificationStatus);
+        syncStopVerification(s);        showMsg(s.verificationStatus==='Verified'?'✅ Visit verified':'⚠️ Location: '+s.verificationStatus);
         reOptimizeRemaining(s);
       },
       function(){
@@ -1145,7 +1147,8 @@ function reOptimizeRemaining(completedStop){
 
 // Change 2: Edit a completed stop's actual duration
 function editDoneStop(stopId){
-  var s=optimized.find(function(x){return x.id==stopId;});
+  stopId=String(stopId);
+  var s=optimized.find(function(x){return String(x.id)===stopId;});
   if(!s)return;
   _doneStopId=stopId;
   document.getElementById('done-modal-title').textContent='✎ Edit time at '+esc(s.name);
