@@ -1443,47 +1443,48 @@ function syncToSheets(upsert){
     productive_ratio_pct:optProd,visit_time_min:optVisitMin,fuel_saved_inr:parseFloat(fuelSaved.toFixed(0))
   })}).catch(function(){});
 
-  // Sheet 2 stop details — always sync ALL stops from master stops array
-  // Merge timing/status data from optimized array where available
-  // This guarantees all stops appear even if some were never routed yet
-  fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-    sheet:'stops_clear',upsert:true,agent_name:agentName,date:dateStr
-  })}).catch(function(){});
-
-  // Build master list: all stops from stops[] merged with routing data from optimized[]
+  // Sheet 2 stop details — send ALL stops as a single batched payload
+  // No clear+rewrite — Apps Script does upsert per stop_id to avoid race conditions
   var optimizedById={};
   optimized.forEach(function(s){optimizedById[String(s.id)]=s;});
 
-  var masterStops=stops.map(function(s){
+  var masterStops=stops.map(function(s,i){
     var opt=optimizedById[String(s.id)];
-    // Use optimized version if available (has timing, travelledKm etc), else use stops version
-    return opt||s;
+    var src=opt||s;
+    return {
+      stop_id:String(src.id),
+      stop_number:i+1,
+      shop_name:src.name,
+      mid:src.mid||'',
+      visit_type:src.visitType||'',
+      address:src.address,
+      lat:src.lat,
+      lon:src.lon,
+      is_approximate_location:src.isOnboarding?'Yes':'No',
+      planned_duration_min:src.dur||15,
+      onboarding_buffer_min:src.isOnboarding?ONBOARDING_BUFFER:0,
+      actual_duration_min:src.actualDur||'',
+      status:src.done?'Completed':'Not Visited',
+      arrival_time:src.arrivalTime?fmtTime(src.arrivalTime):'',
+      departure_time:src.departTime?fmtTime(src.departTime):'',
+      road_distance_from_prev_km:src.travelledKm?parseFloat(src.travelledKm.toFixed(2)):0,
+      road_travel_time_from_prev_min:src.travelledMin?parseFloat(src.travelledMin.toFixed(1)):0,
+      time_window:src.from?(src.from+' – '+src.to):'',
+      time_window_met:src.from?(src.arrivalTime!=null&&src.arrivalTime<=toMin(src.to)?'Yes':'No'):'',
+      verification_status:src.verificationStatus||'',
+      distance_from_stop_metres:src.distanceFromStop||''
+    };
   });
 
-  // Snapshot now before async delays
-  masterStops.forEach(function(s,i){
-    var stopData={
-      sheet:'stops',upsert:true,agent_name:agentName,date:dateStr,last_updated:timeStr,
-      stop_number:i+1,shop_name:s.name,mid:s.mid||'',visit_type:s.visitType||'',
-      address:s.address,lat:s.lat,lon:s.lon,
-      is_approximate_location:s.isOnboarding?'Yes':'No',
-      planned_duration_min:s.dur||15,onboarding_buffer_min:s.isOnboarding?ONBOARDING_BUFFER:0,
-      actual_duration_min:s.actualDur||'',
-      status:s.done?'Completed':'Not Visited',
-      arrival_time:s.arrivalTime?fmtTime(s.arrivalTime):'',
-      departure_time:s.departTime?fmtTime(s.departTime):'',
-      road_distance_from_prev_km:s.travelledKm?parseFloat(s.travelledKm.toFixed(2)):0,
-      road_travel_time_from_prev_min:s.travelledMin?parseFloat(s.travelledMin.toFixed(1)):0,
-      time_window:s.from?(s.from+' – '+s.to):'',
-      time_window_met:s.from?(s.arrivalTime!=null&&s.arrivalTime<=toMin(s.to)?'Yes':'No'):'',
-      verification_status:s.verificationStatus||'',
-      distance_from_stop_metres:s.distanceFromStop||''
-    };
-    setTimeout(function(){
-      fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(stopData)}).catch(function(){});
-    },500+(i*250));
-  });
+  fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      sheet:'stops_batch',
+      agent_name:agentName,
+      date:dateStr,
+      last_updated:timeStr,
+      stops:masterStops
+    })
+  }).catch(function(){});
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
